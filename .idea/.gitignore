@@ -1,0 +1,19 @@
+# Intellij files
+.idea/
+*.ipr
+*.iws
+*.iml
+workspace.xml
+
+# Maven Wrapper
+.mvn/wrapper/target/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Maven target directory
+/target/
+
+# Compiled class file
+*.class
