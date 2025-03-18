@@ -42,3 +42,17 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+    - name: Setup kubectl
+      uses: actions-hub/kubectl@master
+      env:
+        KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+      with:
+        args: get pods
+    
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl set image deployment/backend backend= ${{ steps.build-server-image.outputs.image }}
+
+        # verify rollout status
+        kubectl rollout status deployment/backend
