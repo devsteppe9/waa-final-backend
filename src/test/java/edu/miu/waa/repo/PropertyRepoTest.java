@@ -5,10 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import edu.miu.waa.model.Property;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class PropertyRepoTest {
+class PropertyRepoTest extends AbstractRepoTest {
   
   @Autowired
   private PropertyRepo propertyRepo;
@@ -19,8 +17,7 @@ class PropertyRepoTest {
     property.setName("test");
     propertyRepo.save(property);
     
-    assertTrue(propertyRepo.findAll().stream()
-        .anyMatch(p -> p.getName().equals("test")));
+    assertTrue(propertyRepo.findById(property.getId()).isPresent());
   }
   
   @Test
@@ -30,8 +27,7 @@ class PropertyRepoTest {
     propertyRepo.save(property);
     propertyRepo.delete(property);
     
-    assertTrue(propertyRepo.findAll().stream()
-        .noneMatch(p -> p.getName().equals("test")));
+    assertTrue(propertyRepo.findById(property.getId()).isEmpty());
   }
   
   @Test
@@ -42,7 +38,6 @@ class PropertyRepoTest {
     
     property.setName("test2");
     propertyRepo.save(property);
-    assertTrue(propertyRepo.findAll().stream()
-        .anyMatch(p -> p.getName().equals("test2")));
+    assertTrue(propertyRepo.findByName("test2").isPresent());
   }
 }
