@@ -36,7 +36,7 @@ public class DataInitializer {
 
             userRepository.save(admin);
         }
-        if (userRepository.findUserByUsername("user") == null) {
+        if (userRepository.findUserByUsername("owner") == null) {
             Role clientRole = roleRepository.findRoleByRole("OWNER")
                     .orElseGet(() -> roleRepository.save(new Role("OWNER")));
             User user = new User();

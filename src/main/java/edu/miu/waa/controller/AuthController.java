@@ -23,7 +23,7 @@ public class AuthController {
         if (userService.findByUsername(user.getUsername()) != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists");
         }
-        userService.saveUser(user);
+        userService.addUser(user);
         return ResponseEntity.ok("User registered successfully");
     }
 
