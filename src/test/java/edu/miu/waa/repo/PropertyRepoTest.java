@@ -1,13 +1,17 @@
 package edu.miu.waa.repo;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import edu.miu.waa.model.Property;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@SpringBootTest
+@RunWith(SpringRunner.class)
+@DataJpaTest
 class PropertyRepoTest {
   
   @Autowired
@@ -30,8 +34,7 @@ class PropertyRepoTest {
     propertyRepo.save(property);
     propertyRepo.delete(property);
     
-    assertTrue(propertyRepo.findAll().stream()
-        .noneMatch(p -> p.getName().equals("test")));
+    assertFalse(propertyRepo.findById(property.getId()).isPresent());
   }
   
   @Test
