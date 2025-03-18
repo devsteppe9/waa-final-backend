@@ -17,11 +17,11 @@ import org.springframework.test.web.servlet.MvcResult;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PropertyControllerTest {
+class PropertyControllerTest {
   
   @Autowired private MockMvc mockMvc;
   
-  private ObjectMapper objectMapper = new ObjectMapper();
+  private final ObjectMapper objectMapper = new ObjectMapper();
   
   @Autowired
   private PropertyService propertyService;
