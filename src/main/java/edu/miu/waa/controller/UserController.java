@@ -1,15 +1,39 @@
 package edu.miu.waa.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import edu.miu.waa.dto.UserDto;
+import edu.miu.waa.model.Property;
+import edu.miu.waa.model.User;
+import edu.miu.waa.service.PropertyService;
+import edu.miu.waa.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
+@RequiredArgsConstructor
 public class UserController {
-  
+
+  private final UserService userService;
+
   @GetMapping
-  public String getAllUsers() {
-    return "All users";
+  @ResponseStatus(HttpStatus.OK)
+  public List<UserDto> getAllUsers() {
+    return userService.findAllUsers();
+  }
+
+  @PatchMapping("/{id}/status")
+  public ResponseEntity<String> updateUserStatus(@PathVariable Long id, @RequestParam boolean enabled) {
+    boolean result = userService.updateUserStatus(id, enabled);
+
+    if (result) {
+      String message = enabled ? "User activated successfully." : "User deactivated successfully.";
+      return ResponseEntity.ok(message);
+    }
+
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
   }
 }
