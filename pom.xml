@@ -106,7 +106,7 @@
 		<id>unit-test</id>
 		<activation>
 			<property>
-				<name>unit-test</name>
+				<name>active-profile</name>
 			</property>
 		</activation>
 		<build>
@@ -116,7 +116,7 @@
 					<artifactId>spring-boot-maven-plugin</artifactId>
 					<configuration>
 						<profiles>
-							<profile>${unit-test}</profile>
+							<profile>${active-profile}</profile>
 						</profiles>
 					</configuration>
 				</plugin>
