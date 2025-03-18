@@ -2,7 +2,6 @@ package edu.miu.waa.repo;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import edu.miu.waa.controller.AbstractControllerTest;
 import edu.miu.waa.model.Property;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
