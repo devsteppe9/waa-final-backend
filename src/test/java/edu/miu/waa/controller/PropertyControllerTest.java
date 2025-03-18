@@ -9,14 +9,10 @@ import edu.miu.waa.model.Property;
 import edu.miu.waa.service.PropertyService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class PropertyControllerTest {
+class PropertyControllerTest extends AbstractControllerTest {
   
   @Autowired private MockMvc mockMvc;
   
