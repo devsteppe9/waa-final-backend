@@ -6,7 +6,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest
 @DataJpaTest
 @TestPropertySource(locations = "classpath:application-unit-test.properties")
 @ActiveProfiles({"unit-test"})
