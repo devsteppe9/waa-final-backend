@@ -20,9 +20,8 @@ class PropertyRepoTest {
     Property property = new Property();
     property.setName("test");
     propertyRepo.save(property);
-
-    assertTrue(propertyRepo.findAll().stream()
-        .anyMatch(p -> p.getName().equals("test")));
+    
+    assertTrue(propertyRepo.findById(property.getId()).isPresent());
   }
 
   // @Test
@@ -31,9 +30,8 @@ class PropertyRepoTest {
     property.setName("test");
     propertyRepo.save(property);
     propertyRepo.delete(property);
-
-    assertTrue(propertyRepo.findAll().stream()
-        .noneMatch(p -> p.getName().equals("test")));
+    
+    assertTrue(propertyRepo.findById(property.getId()).isEmpty());
   }
 
   @Test
@@ -44,7 +42,6 @@ class PropertyRepoTest {
 
     property.setName("test2");
     propertyRepo.save(property);
-    assertTrue(propertyRepo.findAll().stream()
-        .anyMatch(p -> p.getName().equals("test2")));
+    assertTrue(propertyRepo.findByName("test2").isPresent());
   }
 }
