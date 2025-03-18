@@ -10,6 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @TestPropertySource(locations = "classpath:application-test.properties")
-@ActiveProfiles("test")
+@ActiveProfiles("unit-test")
 @Transactional
 public class AbstractRepoTest {}
