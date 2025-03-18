@@ -2,15 +2,12 @@ package edu.miu.waa.repo;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import edu.miu.waa.controller.AbstractControllerTest;
 import edu.miu.waa.model.Property;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 
-@SpringBootTest
-@TestPropertySource(locations = "classpath:application.properties")
-class PropertyRepoTest {
+class PropertyRepoTest extends AbstractRepoTest {
 
   @Autowired
   private PropertyRepo propertyRepo;
@@ -24,7 +21,7 @@ class PropertyRepoTest {
     assertTrue(propertyRepo.findById(property.getId()).isPresent());
   }
 
-  // @Test
+   @Test
   void testDeleteProperty() {
     Property property = new Property();
     property.setName("test");
