@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserService {
     List<UserDto> findAllUsers();
-    public User saveUser(User user);
+    public User addUser(User user);
     public User findByUsername(String username);
     public boolean updateUserStatus(Long id, boolean status) ;
 }
