@@ -104,11 +104,6 @@
 	<!-- runs all unit tests -->
 	<profile>
 		<id>unit-test</id>
-		<activation>
-			<property>
-				<name>active-profile</name>
-			</property>
-		</activation>
 		<build>
 			<plugins>
 				<plugin>
@@ -116,7 +111,7 @@
 					<artifactId>spring-boot-maven-plugin</artifactId>
 					<configuration>
 						<profiles>
-							<profile>${active-profile}</profile>
+							<profile>unit-test</profile>
 						</profiles>
 					</configuration>
 				</plugin>
