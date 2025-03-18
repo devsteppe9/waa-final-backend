@@ -9,9 +9,8 @@ import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
-@TestPropertySource(locations = "classpath:application.properties")
-public class UserRepoTest {
+
+public class UserRepoTest extends AbstractRepoTest {
     @Autowired
     private UserRepo userRepo;
     // Add your test cases here
