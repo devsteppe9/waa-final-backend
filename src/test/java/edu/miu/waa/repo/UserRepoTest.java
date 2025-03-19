@@ -1,6 +1,5 @@
 package edu.miu.waa.repo;
 
-import edu.miu.waa.model.Property;
 import edu.miu.waa.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
