@@ -1,9 +1,12 @@
-package edu.miu.waa.repo;
+package edu.miu.waa.service;
 
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 
-@DataJpaTest
+@SpringBootTest
 @TestPropertySource(locations = "classpath:application-unit-test.properties")
-public class AbstractRepoTest {}
+@Transactional
+public class AbstractServiceTest {}

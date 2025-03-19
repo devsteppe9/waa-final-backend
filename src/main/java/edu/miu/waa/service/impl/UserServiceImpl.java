@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -30,6 +31,7 @@ public class UserServiceImpl implements UserService {
         return listMapper.mapList( userRepository.findAll(),new UserDto());
     }
 
+    @Transactional(readOnly = true)
     public User findByUsername(String username) {
         return userRepository.findUserByUsername(username);
     }
@@ -40,6 +42,8 @@ public class UserServiceImpl implements UserService {
     }
 
     public boolean updateUserStatus(Long id, boolean status) {
-        return userRepository.updateUserStatus(id, status) > 0;
+        User user = userRepository.findById(id).orElseThrow(()->new IllegalArgumentException("user not found"));
+        user.setEnabled(status);
+        return true;
     }
 }
