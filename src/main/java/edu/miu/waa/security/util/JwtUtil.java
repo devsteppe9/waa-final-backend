@@ -1,6 +1,7 @@
 package edu.miu.waa.security.util;
 
 import edu.miu.waa.model.Role;
+import edu.miu.waa.service.UserService;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,11 +19,12 @@ import java.util.function.Function;
 public class JwtUtil {
 
     @Autowired
-    UserDetailsService userDetailsService;
+    UserService userDetailsService;
     private final String secret = "top-secret";
     private final long expiration = 1000 * 60 * 60 * 60 * 5; //5 hours
     //     private final long expiration = 5;
     private final long refreshExpiration = 1000 * 60 * 60 * 60 * 24 * 7; //7 days
+
 
     // this wil extract a claim from a token, its used in the methods above to get the username and date
     // TODO When this detects the access token is expired it will throw and exception.
@@ -89,15 +91,9 @@ public class JwtUtil {
     }
 
     public String generateToken(UserDetails userDetails) {
-        Role role = userDetails.getAuthorities().stream()
-                .filter(r -> r instanceof Role)
-                .map(r -> (Role) r)
-                .findFirst()
-                .orElse(null);
-
         Map<String, Object> claims = new HashMap<>();
         claims.put("type", "access"); // Add a "type" claim
-        claims.put("role", role.getRole()); // Add a "type" claim
+        claims.put("roles",userDetails.getAuthorities());
         return doGenerateToken(claims, userDetails.getUsername());
     }
 

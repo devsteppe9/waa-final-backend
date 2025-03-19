@@ -16,14 +16,6 @@ public class WaaApplication {
 		SpringApplication.run(WaaApplication.class, args);
 	}
 
-	@Bean
-	public InMemoryUserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
-		UserDetails user = User.withUsername("test")
-				.password(passwordEncoder.encode("secret"))
-				.roles("USER")
-				.build();
-		return new InMemoryUserDetailsManager(user);
-	}
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {

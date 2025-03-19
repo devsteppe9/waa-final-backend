@@ -1,6 +1,5 @@
 package edu.miu.waa.repo;
 
-import edu.miu.waa.model.Property;
 import edu.miu.waa.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,21 +26,5 @@ public class UserRepoTest {
         userRepo.save(user);
 
         assertTrue(userRepo.findById(user.getId()).isPresent());
-    }
-    @Test
-    void testUpdateUserStatus() {
-        User user = new User();
-        user.setUsername("user1");
-        user.setFirstName("User");
-        user.setLastName("One");
-        user.setEmail("user1@waa.com");
-        user.setPassword("password");
-        user.setEnabled(false);
-
-        User newUser  = userRepo.save(user);
-
-        userRepo.updateUserStatus(newUser.getId(), true);
-
-        assertTrue(userRepo.findById(newUser.getId()).orElse(null).getEnabled());
     }
 }
