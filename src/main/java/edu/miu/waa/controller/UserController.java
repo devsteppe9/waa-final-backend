@@ -1,9 +1,6 @@
 package edu.miu.waa.controller;
 
-import edu.miu.waa.dto.UserDto;
-import edu.miu.waa.model.Property;
-import edu.miu.waa.model.User;
-import edu.miu.waa.service.PropertyService;
+import edu.miu.waa.dto.UserOutDto;
 import edu.miu.waa.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +18,7 @@ public class UserController {
 
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public List<UserDto> getAllUsers() {
+  public List<UserOutDto> getAllUsers() {
     return userService.findAllUsers();
   }
 

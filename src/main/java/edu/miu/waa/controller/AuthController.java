@@ -1,17 +1,16 @@
 package edu.miu.waa.controller;
 
-import edu.miu.waa.model.User;
+import edu.miu.waa.dto.UserInDto;
 import edu.miu.waa.security.dto.LoginRequest;
 import edu.miu.waa.security.dto.LoginResponse;
 import edu.miu.waa.security.dto.RefreshTokenRequest;
 import edu.miu.waa.security.service.AuthService;
 import edu.miu.waa.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,13 +21,14 @@ public class AuthController {
     private final UserService userService;
     private final AuthService authService;
 
-    public AuthController(AuthService authService, UserService userService) {
+    public AuthController(AuthService authService, UserService userService, ModelMapper modelMapper) {
         this.authService = authService;
         this.userService = userService;
+
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody User user) {
+    public ResponseEntity<String> register(@RequestBody UserInDto user) {
         if (userService.findByUsername(user.getUsername()) != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists");
         }
