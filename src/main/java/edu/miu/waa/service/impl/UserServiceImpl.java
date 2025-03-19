@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
         User u = modelMapper.map(user,User.class);
         u.setPassword(passwordEncoder.encode(user.getPassword()));
         //assign roles based on user.getRole
-        Role role = roleRepository.findRoleByRole(user.getRole()).orElseThrow(new IllegalArgumentException("Invalid Role"));
+        Role role = roleRepository.findRoleByRole(user.getRole()).orElseThrow(() -> new IllegalArgumentException("Invalid Role"));
         u.getRoles().add(role);
         return userRepository.save(u);
     }
