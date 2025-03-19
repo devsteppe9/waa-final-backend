@@ -1,25 +1,17 @@
 package edu.miu.waa.util;
 
-import edu.miu.waa.model.Role;
+import static org.junit.jupiter.api.Assertions.*;
+
 import edu.miu.waa.security.util.JwtUtil;
 import edu.miu.waa.service.AbstractServiceTest;
 import edu.miu.waa.service.UserService;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.Collections;
+import java.util.Date;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.test.context.TestPropertySource;
-
-import java.util.Collections;
-import java.util.Date;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 class JwtUtilTest extends AbstractServiceTest {
 
