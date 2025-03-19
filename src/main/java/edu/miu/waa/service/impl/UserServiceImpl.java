@@ -8,6 +8,7 @@ import edu.miu.waa.repo.RoleRepo;
 import edu.miu.waa.repo.UserRepo;
 import edu.miu.waa.service.UserService;
 import edu.miu.waa.util.ListMapper;
+import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,21 +24,19 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepo userRepository;
-    @Autowired
-    private RoleRepo roleRepository;
+    private final UserRepo userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final RoleRepo roleRepository;
 
-    @Autowired
-    ListMapper listMapper;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
+
+    private final ListMapper listMapper;
+
+    private final ModelMapper modelMapper;
 
 
     @Override
@@ -55,7 +54,7 @@ public class UserServiceImpl implements UserService {
         User u = modelMapper.map(user,User.class);
         u.setPassword(passwordEncoder.encode(user.getPassword()));
         //assign roles based on user.getRole
-        Role role = roleRepository.findRoleByRole(user.getRole()).orElse(null);
+        Role role = roleRepository.findRoleByRole(user.getRole()).orElseThrow(new IllegalArgumentException("Invalid Role"));
         u.getRoles().add(role);
         return userRepository.save(u);
     }
