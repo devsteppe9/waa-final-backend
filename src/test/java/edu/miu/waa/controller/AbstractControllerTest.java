@@ -11,5 +11,4 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-unit-test.properties")
 @Transactional
-@ActiveProfiles({"unit-test"})
 public class AbstractControllerTest {}
