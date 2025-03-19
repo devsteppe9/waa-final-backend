@@ -1,21 +1,18 @@
 package edu.miu.waa.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.miu.waa.dto.UserDto;
+import edu.miu.waa.dto.UserInDto;
 import edu.miu.waa.model.Role;
 import edu.miu.waa.model.User;
 import edu.miu.waa.repo.RoleRepo;
 import edu.miu.waa.security.dto.LoginRequest;
 import edu.miu.waa.security.dto.LoginResponse;
-import edu.miu.waa.security.dto.RefreshTokenRequest;
 import edu.miu.waa.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -39,13 +36,14 @@ public class AuthControllerTest extends AbstractControllerTest {
         // Count existing users
         int initialUserCount = userService.findAllUsers().size();
 
-        User u = new User();
+        UserInDto u = new UserInDto();
         u.setFirstName("testNewUser");
         u.setEmail("test@waa.com");
         u.setLastName("test");
         u.setUsername("newUser");
         u.setPassword("password");
         u.setEnabled(true);
+        u.setRole("OWNER");
 
         // Perform POST request to register the user
         MvcResult result = mockMvc.perform(post("/api/v1/auth/register")
@@ -67,11 +65,11 @@ public class AuthControllerTest extends AbstractControllerTest {
     void testLogin() throws Exception {
 
 
-        User u1 = new User();
+        UserInDto u1 = new UserInDto();
         u1.setEnabled(true);
         u1.setUsername("nqthanh");
         u1.setPassword("12345678");
-        u1.getRoles().add(new Role("OWNER"));
+        u1.setRole("OWNER");
         userService.addUser(u1);
 
         LoginRequest loginRequest = new LoginRequest();
@@ -93,6 +91,7 @@ public class AuthControllerTest extends AbstractControllerTest {
 
         assertTrue(loginResponse.getAccessToken().length() > 0);
         assertTrue(loginResponse.getRefreshToken().length() > 0);
+        assertEquals("nqthanh",loginResponse.getUserDetail().getUsername());
     }
 
 
