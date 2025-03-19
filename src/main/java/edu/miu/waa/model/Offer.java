@@ -20,6 +20,8 @@ public class Offer {
 
     private OfferStatusEnum status;
     private LocalDate createdDate;
+    private Double offerAmount;
+    private String message;
 
     @ManyToOne
     @JoinColumn(name = "property_id")

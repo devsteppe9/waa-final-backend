@@ -2,10 +2,13 @@ package edu.miu.waa.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+
+import edu.miu.waa.dto.response.OfferResponseDto;
 import edu.miu.waa.model.FileResource;
 import edu.miu.waa.model.Property;
 import edu.miu.waa.service.FileResourceService;
 import edu.miu.waa.service.LocalStorageService;
+import edu.miu.waa.service.OfferService;
 import edu.miu.waa.service.PropertyService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -36,17 +39,19 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Slf4j
 public class PropertyController {
-  
+
   private final PropertyService propertyService;
   private final FileResourceService fileResourceService;
   private final LocalStorageService localStorageService;
-  
+  private final OfferService offerService;
+  private final Long currentUserId = 1L; // TODO: get current user id
+
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   public List<Property> getAllProperties() {
     return propertyService.findAllProperties();
   }
-  
+
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<Property> getPropertyById(@PathVariable long id) {
@@ -54,20 +59,20 @@ public class PropertyController {
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
   }
-  
+
   @PostMapping(consumes = "application/json")
   @ResponseStatus(HttpStatus.CREATED)
   public Long create(Property property) {
     propertyService.create(property);
     return property.getId();
   }
-  
+
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public void update(@PathVariable long id, @RequestBody Property property) {
     propertyService.updateById(id, property);
   }
-  
+
   @PatchMapping(value = "/{id}", consumes = "application/json")
   public ResponseEntity patch(@PathVariable long id, @RequestBody String jsonPatch) {
     try {
@@ -79,7 +84,7 @@ public class PropertyController {
     }
     return ResponseEntity.ok().build();
   }
-  
+
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deletePropertyById(@PathVariable long id) {
@@ -87,7 +92,7 @@ public class PropertyController {
         .orElseThrow(() -> new IllegalArgumentException("Property not found"));
     propertyService.delete(property);
   }
-  
+
   @PostMapping(value = "/{id}/images", consumes = "multipart/form-data")
   public void uploadImage(@PathVariable long id, @RequestParam MultipartFile[] files)
       throws IOException {
@@ -95,13 +100,19 @@ public class PropertyController {
         .orElseThrow(() -> new IllegalArgumentException("Property not found"));
     fileResourceService.saveFileResource(property, files);
   }
-  
+
   @GetMapping("/{id}/images")
   public List<FileResource> getImages(@PathVariable long id) {
     Property property = propertyService.findPropertyById(id)
         .orElseThrow(() -> new IllegalArgumentException("Property not found"));
-    
+
     return property.getFileResources();
   }
-  
+
+  @GetMapping("/{propertyId}/offers")
+  @ResponseStatus(HttpStatus.OK)
+  public List<OfferResponseDto> getOffersByPropertyId(@PathVariable long propertyId) {
+    return offerService.findAllOffersByPropertyId(currentUserId, propertyId);
+  }
+
 }
