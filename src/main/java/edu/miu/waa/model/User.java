@@ -1,6 +1,5 @@
 package edu.miu.waa.model;
 
-
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.Fetch;
@@ -26,6 +25,9 @@ public class User {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable
     private List<Role> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Offer> offers;
 
     @Override
     public String toString() {

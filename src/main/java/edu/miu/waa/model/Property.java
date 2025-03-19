@@ -23,12 +23,15 @@ public class Property {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
-  
+
   private String name;
-  
+
   private String description;
-  
+
   @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
   private List<FileResource> fileResources;
-  
+
+  @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
+  private List<Offer> offers;
+
 }
