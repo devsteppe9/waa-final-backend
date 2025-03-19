@@ -6,6 +6,7 @@ import lombok.Data;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,7 +25,7 @@ public class User {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable
-    private List<Role> roles;
+    private List<Role> roles = new ArrayList<>();
 
     @Override
     public String toString() {
