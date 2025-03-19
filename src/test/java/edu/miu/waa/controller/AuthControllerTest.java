@@ -2,7 +2,9 @@ package edu.miu.waa.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.miu.waa.dto.UserDto;
+import edu.miu.waa.model.Role;
 import edu.miu.waa.model.User;
+import edu.miu.waa.repo.RoleRepo;
 import edu.miu.waa.security.dto.LoginRequest;
 import edu.miu.waa.security.dto.LoginResponse;
 import edu.miu.waa.security.dto.RefreshTokenRequest;
@@ -12,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -27,8 +31,8 @@ public class AuthControllerTest extends AbstractControllerTest {
 
     @Autowired
     private UserService userService;
-
-
+    @Autowired
+    private RoleRepo roleRepo;
     @Test
     void testRegister() throws Exception {
 
@@ -62,10 +66,12 @@ public class AuthControllerTest extends AbstractControllerTest {
     @Test
     void testLogin() throws Exception {
 
+
         User u1 = new User();
         u1.setEnabled(true);
         u1.setUsername("nqthanh");
         u1.setPassword("12345678");
+        u1.getRoles().add(new Role("OWNER"));
         userService.addUser(u1);
 
         LoginRequest loginRequest = new LoginRequest();
