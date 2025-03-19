@@ -91,6 +91,7 @@ public class AuthControllerTest extends AbstractControllerTest {
 
         assertTrue(loginResponse.getAccessToken().length() > 0);
         assertTrue(loginResponse.getRefreshToken().length() > 0);
+        assertEquals("nqthanh",loginResponse.getUserDetail().getUsername());
     }
 
 

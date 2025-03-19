@@ -1,9 +1,11 @@
 package edu.miu.waa.security.service.impl;
 
+import edu.miu.waa.dto.UserOutDto;
 import edu.miu.waa.security.dto.LoginRequest;
 import edu.miu.waa.security.dto.RefreshTokenRequest;
 import edu.miu.waa.security.dto.LoginResponse;
 import edu.miu.waa.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseCookie;
 import edu.miu.waa.security.service.AuthService;
 import edu.miu.waa.security.util.JwtUtil;
@@ -25,6 +27,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final ModelMapper modelMapper;
 
 
     @Override
@@ -40,9 +43,11 @@ public class AuthServiceImpl implements AuthService {
 
         final UserDetails userDetails = userService.loadUserByUsername(result.getName());
 
+        final UserOutDto userOut = modelMapper.map(userService.findByUsername(loginRequest.getUsername()), UserOutDto.class);
         final String accessToken = jwtUtil.generateToken(userDetails);
         final String refreshToken = jwtUtil.generateRefreshToken(loginRequest.getUsername());
-        return new LoginResponse(accessToken, refreshToken);
+
+        return new LoginResponse(accessToken, refreshToken, userOut);
     }
 
     @Override
