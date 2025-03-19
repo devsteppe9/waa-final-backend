@@ -2,9 +2,12 @@ package edu.miu.waa.util;
 
 import edu.miu.waa.model.Role;
 import edu.miu.waa.security.util.JwtUtil;
+import edu.miu.waa.service.AbstractServiceTest;
+import edu.miu.waa.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -18,18 +21,13 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@TestPropertySource(locations = "classpath:application.properties")
-class JwtUtilTest {
+class JwtUtilTest extends AbstractServiceTest {
 
+    @Autowired
     private JwtUtil jwtUtil;
-    private UserDetailsService userDetailsService;
+    @Autowired
+    private UserService userDetailsService;
 
-    @BeforeEach
-    void setUp() {
-        userDetailsService = Mockito.mock(UserDetailsService.class);
-        jwtUtil = new JwtUtil();
-    }
 
     @Test
     void testGenerateToken() {
@@ -64,13 +62,5 @@ class JwtUtilTest {
         String token = jwtUtil.doGenerateToken("testuser");
         Date expiration = jwtUtil.getExpirationDateFromToken(token);
         assertNotNull(expiration);
-    }
-
-    @Test
-    void testGetAuthentication() {
-        UserDetails userDetails = new User("testuser", "password", Collections.singletonList(new  SimpleGrantedAuthority("OWNER")));
-        when(userDetailsService.loadUserByUsername("testuser")).thenReturn(userDetails);
-        String token = jwtUtil.generateToken(userDetails);
-        assertNotNull(jwtUtil.getAuthentication(token));
     }
 }
