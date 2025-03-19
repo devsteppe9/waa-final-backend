@@ -45,38 +45,36 @@ public class JCloudStore {
 
   @Value("${cloud.store.externalDirectoryPath:#{null}}")
   private String externalDirectoryPath;
-  
-  @Value("${cloud.store.provider}")
+
+  @Value("${cloud.store.provider:#{null}}")
   private String provider;
-  
-  @Value("${cloud.store.location}")
+
+  @Value("${cloud.store.location:#{null}}")
   private String location;
 
-  @Value("${cloud.store.endpoint}")
+  @Value("${cloud.store.endpoint:#{null}}")
   private String endpoint;
-  
-  @Value("${cloud.store.container}")
+
+  @Value("${cloud.store.container:#{null}}")
   private String container;
-  
-  @Value("${cloud.store.identity}")
+
+  @Value("${cloud.store.identity:#{null}}")
   private String identity;
-  
-  @Value("${cloud.store.secret}")
+
+  @Value("${cloud.store.secret:#{null}}")
   private String secret;
 
-  JCloudStore() {
-  }
+  JCloudStore() {}
 
   private String validateProvider(String provider) {
     if (!SUPPORTED_PROVIDERS.contains(provider)) {
       throw new IllegalArgumentException(
           "Configuration contains unsupported file store provider '"
-          + provider
-          + "'. Falling back to file system provider instead.");
+              + provider
+              + "'. Falling back to file system provider instead.");
     }
 
-    if (JCLOUDS_PROVIDER_KEY_FILESYSTEM.equals(provider)
-        && externalDirectoryPath == null) {
+    if (JCLOUDS_PROVIDER_KEY_FILESYSTEM.equals(provider) && externalDirectoryPath == null) {
       throw new IllegalArgumentException(
           "File system file store provider could not be configured; external directory is not set. ");
     }
@@ -87,8 +85,7 @@ public class JCloudStore {
   private Properties configureOverrides(String provider, String endpoint) {
     if (JCLOUDS_PROVIDER_KEY_FILESYSTEM.equals(provider)) {
       Properties overrides = new Properties();
-      overrides.setProperty(
-          "jclouds.filesystem.basedir", externalDirectoryPath);
+      overrides.setProperty("jclouds.filesystem.basedir", externalDirectoryPath);
       return overrides;
     }
 
@@ -113,7 +110,11 @@ public class JCloudStore {
 
   @PostConstruct
   public void init() {
-    validateProvider(provider);
+    //    validateProvider(provider);
+    if (provider.equals(JCLOUDS_PROVIDER_KEY_FILESYSTEM)) {
+      return;
+    }
+
     fileStoreConfig = new FileStoreConfig(provider, location, container);
     blobStoreContext =
         ContextBuilder.newBuilder(provider)
@@ -121,8 +122,9 @@ public class JCloudStore {
             .overrides(configureOverrides(provider, endpoint))
             .build(BlobStoreContext.class);
     Location cloudLocation = createLocation(fileStoreConfig.provider, fileStoreConfig.location);
-    blobStoreContext.getBlobStore().createContainerInLocation(cloudLocation, fileStoreConfig.container);
-
+    blobStoreContext
+        .getBlobStore()
+        .createContainerInLocation(cloudLocation, fileStoreConfig.container);
     log.info(
         "File store configured with provider: '{}', container: '{}' and location: '{}'.",
         fileStoreConfig.provider,
@@ -168,7 +170,7 @@ public class JCloudStore {
   public PageSet<? extends StorageMetadata> getBlobList(ListContainerOptions options) {
     return getBlobStore().list(getBlobContainer(), options);
   }
-  
+
   public void putBlob(Blob blob) {
     getBlobStore().putBlob(getBlobContainer(), blob);
   }
