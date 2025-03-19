@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface PropertyService {
   List<Property> findAllProperties();
   Optional<Property> findPropertyById(long id);
-  void create(Property property);
+  Property create(Property property);
   void updateById(long id, Property property);
   void delete(Property property);
   Property patch(long id, String jsonPatch) throws JsonProcessingException;
