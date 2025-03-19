@@ -15,7 +15,6 @@ public interface UserRepo extends JpaRepository<User, Long> {
     User findUserByUsername(String username);
 
     @Modifying
-    @Transactional
     @Query("UPDATE User u SET u.enabled = :status WHERE u.id = :id")
     int updateUserStatus(@Param("id") Long id, @Param("status") boolean status);
 

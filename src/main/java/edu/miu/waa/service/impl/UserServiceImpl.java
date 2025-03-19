@@ -39,6 +39,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+
     public boolean updateUserStatus(Long id, boolean status) {
         return userRepository.updateUserStatus(id, status) > 0;
     }

@@ -1,4 +1,4 @@
-package edu.miu.waa.security;
+package edu.miu.waa.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
