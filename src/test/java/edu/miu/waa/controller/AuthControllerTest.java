@@ -36,13 +36,14 @@ public class AuthControllerTest extends AbstractControllerTest {
         // Count existing users
         int initialUserCount = userService.findAllUsers().size();
 
-        User u = new User();
+        UserInDto u = new UserInDto();
         u.setFirstName("testNewUser");
         u.setEmail("test@waa.com");
         u.setLastName("test");
         u.setUsername("newUser");
         u.setPassword("password");
         u.setEnabled(true);
+        u.setRole("OWNER");
 
         // Perform POST request to register the user
         MvcResult result = mockMvc.perform(post("/api/v1/auth/register")
