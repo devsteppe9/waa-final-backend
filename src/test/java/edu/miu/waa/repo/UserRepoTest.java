@@ -3,16 +3,17 @@ package edu.miu.waa.repo;
 import edu.miu.waa.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
-@TestPropertySource(locations = "classpath:application.properties")
-public class UserRepoTest {
+
+public class UserRepoTest extends AbstractRepoTest {
     @Autowired
     private UserRepo userRepo;
+    
     // Add your test cases here
     @Test
     void testAddUser() {

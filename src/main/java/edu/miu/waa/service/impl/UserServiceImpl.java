@@ -42,6 +42,7 @@ public class UserServiceImpl implements UserService {
         return listMapper.mapList( userRepository.findAll(),new UserDto());
     }
 
+    @Transactional(readOnly = true)
     public User findByUsername(String username) {
         return userRepository.findUserByUsername(username);
     }
