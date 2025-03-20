@@ -25,7 +25,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 class PropertyControllerTest extends AbstractControllerTest {
   
-  
   private final ObjectMapper objectMapper = new ObjectMapper();
   
   @Autowired
@@ -43,18 +42,18 @@ class PropertyControllerTest extends AbstractControllerTest {
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .content(
                         """
-{"name": "test", 
-"description": "test", 
-"price": 1560000000.0,
-"address": "test",
-"state": "test",
-"zipcode": 12345,
-"city": "test",
-"country": "test",
-"totalBathrooms": 1,
-"totalBedrooms": 1,
-"totalArea": 1}
-"""))
+            {"name": "test", 
+            "description": "test", 
+            "price": 1560000000.0,
+            "address": "test",
+            "state": "test",
+            "zipcode": 12345,
+            "city": "test",
+            "country": "test",
+            "totalBathrooms": 1,
+            "totalBedrooms": 1,
+            "totalArea": 1}
+            """))
             .andExpect(status().isCreated())
             .andReturn();
     PropertyResponseDto property = objectMapper.readValue(resultCreate.getResponse().getContentAsString(),

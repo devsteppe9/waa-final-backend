@@ -71,6 +71,9 @@ public class PropertyServiceImpl implements PropertyService {
 
   @Override
   public void delete(Property property) {
+    if (property.getOffers() != null && property.getOffers().size() > 0) {
+      throw new IllegalArgumentException("Cannot delete property with offers");
+    }
     propertyRepo.delete(property);
   }
 

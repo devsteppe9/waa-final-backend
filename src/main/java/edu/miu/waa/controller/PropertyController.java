@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -54,8 +55,8 @@ public class PropertyController {
   
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public List<Property> getAllProperties() {
-    return propertyService.findAllProperties();
+  public List<PropertyResponseDto> getAllProperties() {
+    return propertyService.findAllProperties().stream().map(property -> modelMapper.map(property, PropertyResponseDto.class)).collect(Collectors.toList());
   }
 
   @GetMapping("/{id}")

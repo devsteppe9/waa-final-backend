@@ -1,6 +1,6 @@
 package edu.miu.waa.model;
 
-import jakarta.persistence.Column;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -13,13 +13,13 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Cascade;
 
 @Entity
 @Getter
@@ -66,7 +66,7 @@ public class Property {
   @JoinColumn(name = "user_id")
   private User owner;
   
-  @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "property", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
   private List<FileResource> fileResources = new ArrayList<>();
 
   @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
