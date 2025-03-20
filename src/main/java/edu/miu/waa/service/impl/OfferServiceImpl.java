@@ -37,7 +37,9 @@ public class OfferServiceImpl implements OfferService {
     public List<OfferResponseDto> findAllOffers(Long userId) {
         List<Offer> offers = offerRepo.findByUserId(userId);
 
-        return offers.stream().map(
+        return offers.stream()
+                .sorted((o1,o2) -> o2.getId().compareTo(o1.getId()))
+                .map(
                 offer -> modelMapper.map(offer, OfferResponseDto.class)).toList();
 
     }
