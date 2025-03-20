@@ -1,5 +1,6 @@
 package edu.miu.waa.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -41,11 +42,11 @@ public class Property {
   
   private String country;
   
-  private int totalBathrooms;
+  private Integer totalBathrooms;
   
-  private int totalBedrooms;
+  private Integer totalBedrooms;
   
-  private int totalArea;
+  private Integer totalArea;
 
   @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
   private List<FileResource> fileResources = new ArrayList<>();
