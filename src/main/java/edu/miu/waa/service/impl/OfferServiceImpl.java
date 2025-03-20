@@ -7,11 +7,15 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
+
 import edu.miu.waa.dto.request.OfferRequestDto;
 import edu.miu.waa.dto.response.OfferResponseDto;
 import edu.miu.waa.model.Offer;
+import edu.miu.waa.model.Property;
 import edu.miu.waa.model.User;
 import edu.miu.waa.repo.OfferRepo;
+import edu.miu.waa.repo.PropertyRepo;
 import edu.miu.waa.repo.UserRepo;
 import edu.miu.waa.service.OfferService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +26,7 @@ public class OfferServiceImpl implements OfferService {
 
     private final OfferRepo offerRepo;
     private final UserRepo userRepo;
+    private final PropertyRepo propertyRepo;
 
     @Autowired
     ModelMapper modelMapper;
@@ -45,7 +50,12 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public Long create(Long userId, OfferRequestDto offerRequestDto) {
         User user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        Offer offer = modelMapper.map(offerRequestDto, Offer.class);
+        Property property = propertyRepo.findById(offerRequestDto.getPropertyId())
+                .orElseThrow(() -> new RuntimeException("Property not found"));
+        Offer offer = new Offer();
+        offer.setProperty(property);
+        offer.setOfferAmount(offerRequestDto.getOfferAmount());
+        offer.setMessage(offerRequestDto.getMessage());
         offer.setUser(user);
 
         return offerRepo.save(offer).getId();
