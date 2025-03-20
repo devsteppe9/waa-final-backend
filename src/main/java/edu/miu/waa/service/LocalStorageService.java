@@ -1,5 +1,6 @@
 package edu.miu.waa.service;
 
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 import org.springframework.core.io.Resource;
@@ -13,6 +14,8 @@ public interface LocalStorageService {
   Stream<Path> loadAll();
 
   Path load(String filename);
+
+  void copyFileResourceContent(String key, OutputStream outputStream);
 
   Resource loadAsResource(String filename);
 

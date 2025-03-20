@@ -156,7 +156,7 @@ class PropertyControllerTest extends AbstractControllerTest {
     assertEquals(1, property.getFileResources().size());
     assertEquals("test.txt", property.getFileResources().get(0).getFileName());
     assertNotNull(property.getFileResources().get(0).getStorageKey());
-    assertNotNull(property.getFileResources().get(0).getLinks().stream().toList().get(0).getHref());
+    assertNotNull(property.getFileResources().get(0).getHref());
     String storageKey = property.getFileResources().get(0).getStorageKey();
     MvcResult result = mockMvc.perform(get("/api/v1/file-resources/%s".formatted(storageKey))).andExpect(status().isOk()).andReturn();
     byte[] file = result.getResponse().getContentAsByteArray();

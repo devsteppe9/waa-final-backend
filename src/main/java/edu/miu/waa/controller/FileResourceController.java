@@ -6,13 +6,15 @@ import edu.miu.waa.service.FileResourceService;
 import edu.miu.waa.service.LocalStorageService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api/v1/file-resources")
@@ -28,26 +30,24 @@ public class FileResourceController {
     return ResponseEntity.ok(new FileResourceDto(fileResource));
   }
 
-  @GetMapping("/{storageKey}")
-  public ResponseEntity<Resource> getImage(@PathVariable String storageKey, HttpServletResponse response) {
+  @GetMapping(value = "/{storageKey}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+  public void getImage(@PathVariable String storageKey, HttpServletResponse response) {
     FileResource fileResource = fileResourceService.getByStorageKey(storageKey);
     
     if (fileResource == null) {
-      return ResponseEntity.notFound().build();
+      throw new IllegalArgumentException("Cannot find: " + storageKey);
     }
     response.setContentType(fileResource.getContentType());
-
     response.setHeader(
         HttpHeaders.CONTENT_LENGTH,
         String.valueOf(fileResourceService.getFileResourceContentLength(fileResource)));
-    response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "filename=" + fileResource.getName());
+    response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "filename=" + fileResource.getFileName());
 
-    Resource file = localStorageService.loadAsResource(
-        fileResource.getStorageKey());
-    if ( file == null ) {
-      return ResponseEntity.notFound().build();
+    try {
+      localStorageService.copyFileResourceContent(fileResource.getStorageKey(), response.getOutputStream());
+    } catch (Exception e) {
+      throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND, "Could not find " + storageKey);
     }
-    return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-        "attachment; filename=\"" + file.getFilename() + "\"").body(file);
   }
 }
