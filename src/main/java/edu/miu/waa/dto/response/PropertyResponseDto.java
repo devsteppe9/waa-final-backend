@@ -31,6 +31,6 @@ public class PropertyResponseDto {
   private List<FileResourceDto> fileResources = new ArrayList<>();
   private LocalDateTime created;
   private Date expirationDate;
-  private PropertyStatus status;
+  private String status;
   private UserOutDto owner;
 }

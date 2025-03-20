@@ -1,8 +1,9 @@
 package edu.miu.waa.model;
 
 public enum PropertyStatus {
-  AVAILABLE,
+  
   SOLD,
+  AVAILABLE,
   PENDING,
-  CONTINGENT
+  CONTINGENT;
 }

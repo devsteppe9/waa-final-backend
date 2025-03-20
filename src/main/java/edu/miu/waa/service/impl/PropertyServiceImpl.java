@@ -59,7 +59,7 @@ public class PropertyServiceImpl implements PropertyService {
   }
 
   @Override
-  public void updateById(long id, Property property) {
+  public void updateById(long id, PropertyRequestDto property) {
     
     Property persistedProperty =
         propertyRepo
