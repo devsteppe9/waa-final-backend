@@ -1,12 +1,18 @@
 package edu.miu.waa.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.miu.waa.dto.request.OfferRequestDto;
 import edu.miu.waa.dto.response.OfferResponseDto;
+import edu.miu.waa.model.Offer;
+import edu.miu.waa.model.User;
 import edu.miu.waa.repo.OfferRepo;
+import edu.miu.waa.repo.UserRepo;
 import edu.miu.waa.service.OfferService;
 import lombok.RequiredArgsConstructor;
 
@@ -15,35 +21,63 @@ import lombok.RequiredArgsConstructor;
 public class OfferServiceImpl implements OfferService {
 
     private final OfferRepo offerRepo;
+    private final UserRepo userRepo;
+
+    @Autowired
+    ModelMapper modelMapper;
 
     @Override
     public List<OfferResponseDto> findAllOffers(Long userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAllOffers'");
+        List<Offer> offers = offerRepo.findByUserId(userId);
+
+        return offers.stream().map(
+                offer -> modelMapper.map(offer, OfferResponseDto.class)).toList();
+
     }
 
     @Override
     public OfferResponseDto findOfferById(Long userId, Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findOfferById'");
+        Offer offer = offerRepo.findByUserIdAndId(userId, id)
+                .orElseThrow(() -> new RuntimeException("Offer not found"));
+        return modelMapper.map(offer, OfferResponseDto.class);
     }
 
     @Override
-    public Long create(OfferRequestDto offerRequestDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'create'");
+    public Long create(Long userId, OfferRequestDto offerRequestDto) {
+        User user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        Offer offer = modelMapper.map(offerRequestDto, Offer.class);
+        offer.setUser(user);
+
+        return offerRepo.save(offer).getId();
     }
 
     @Override
     public void update(Long userId, long id, OfferRequestDto offerRequestDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        User user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        Offer offer = offerRepo.findByUserIdAndId(userId, id)
+                .orElseThrow(() -> new RuntimeException("Offer not found"));
+        modelMapper.map(offerRequestDto, offer);
+        offer.setUser(user);
+
+        offerRepo.save(offer);
     }
 
     @Override
     public void delete(Long userId, long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+        userRepo.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+
+        Offer offer = offerRepo.findByUserIdAndId(userId, id)
+                .orElseThrow(() -> new RuntimeException("Offer not found"));
+
+        offerRepo.delete(offer);
+    }
+
+    @Override
+    public List<OfferResponseDto> findAllOffersByPropertyId(Long userId, Long propertyId) {
+        List<Offer> offers = offerRepo.findByUserIdAndPropertyId(userId, propertyId);
+
+        return offers.stream().map(
+                offer -> modelMapper.map(offer, OfferResponseDto.class)).toList();
     }
 
 }

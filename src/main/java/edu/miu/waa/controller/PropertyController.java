@@ -5,10 +5,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import edu.miu.waa.dto.request.PropertyRequestDto;
 import edu.miu.waa.dto.response.FileResourceDto;
+import edu.miu.waa.dto.response.OfferResponseDto;
 import edu.miu.waa.dto.response.PropertyResponseDto;
 import edu.miu.waa.model.Property;
 import edu.miu.waa.service.FileResourceService;
 import edu.miu.waa.service.LocalStorageService;
+import edu.miu.waa.service.OfferService;
 import edu.miu.waa.service.PropertyService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -46,19 +48,19 @@ import org.springframework.web.multipart.MultipartFile;
 public class PropertyController {
 
   private final ModelMapper modelMapper;
-
   private final PropertyService propertyService;
   private final FileResourceService fileResourceService;
   private final LocalStorageService localStorageService;
-
+  private final OfferService offerService;
   private static Method method = ReflectionUtils.findMethod(FileResourceController.class, "getImage", String.class, HttpServletResponse.class);
+  private final Long currentUserId = 1L; // TODO: get current user id
   
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   public List<Property> getAllProperties() {
     return propertyService.findAllProperties();
   }
-  
+
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public ResponseEntity<PropertyResponseDto> getPropertyById(@PathVariable long id) {
@@ -74,19 +76,19 @@ public class PropertyController {
     });
     return ResponseEntity.ok(p);
   }
-  
+
   @PostMapping(consumes = "application/json")
   @ResponseStatus(HttpStatus.CREATED)
   public Property create(@RequestBody PropertyRequestDto propertyDto) {
     return propertyService.create(propertyDto);
   }
-  
+
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public void update(@PathVariable long id, @RequestBody Property property) {
     propertyService.updateById(id, property);
   }
-  
+
   @PatchMapping(value = "/{id}", consumes = "application/json")
   public ResponseEntity patch(@PathVariable long id, @RequestBody String jsonPatch) {
     try {
@@ -98,7 +100,7 @@ public class PropertyController {
     }
     return ResponseEntity.ok().build();
   }
-  
+
   @DeleteMapping("/{id}")
   public ResponseEntity deletePropertyById(@PathVariable long id) {
     Optional<Property> property = propertyService.findPropertyById(id);
@@ -108,7 +110,7 @@ public class PropertyController {
     propertyService.delete(property.get());
     return ResponseEntity.noContent().build();
   }
-  
+
   @PostMapping(value = "/{id}/images", consumes = "multipart/form-data")
   @ResponseStatus(HttpStatus.CREATED)
   public PropertyResponseDto uploadImage(@PathVariable long id, @RequestParam MultipartFile[] files)
@@ -126,7 +128,7 @@ public class PropertyController {
     
     return response;
   }
-  
+
   @GetMapping("/{id}/images")
   public List<FileResourceDto> getImages(@PathVariable long id) {
     Property property = propertyService.findPropertyById(id)
@@ -139,5 +141,11 @@ public class PropertyController {
         return dto;
     }).collect(Collectors.toList());
   }
-  
+
+  @GetMapping("/{propertyId}/offers")
+  @ResponseStatus(HttpStatus.OK)
+  public List<OfferResponseDto> getOffersByPropertyId(@PathVariable long propertyId) {
+    return offerService.findAllOffersByPropertyId(currentUserId, propertyId);
+  }
+
 }

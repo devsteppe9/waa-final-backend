@@ -24,13 +24,17 @@ public class Property {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
-  
+
   private String name;
-  
+
   private String description;
   
   private Double price;
 
   @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
-  private List<FileResource> fileResources = new ArrayList<>();
+  private List<FileResource> fileResources;
+
+  @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
+  private List<Offer> offers;
+
 }
