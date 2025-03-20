@@ -28,6 +28,8 @@ public class Property {
   private String name;
   
   private String description;
+  
+  private Double price;
 
   @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
   private List<FileResource> fileResources = new ArrayList<>();

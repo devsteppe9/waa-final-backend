@@ -1,15 +1,16 @@
 package edu.miu.waa.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import edu.miu.waa.WaaApplication;
+import edu.miu.waa.dto.request.PropertyRequestDto;
 import edu.miu.waa.model.Property;
 import edu.miu.waa.repo.PropertyRepo;
 import edu.miu.waa.service.PropertyService;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,8 @@ import org.springframework.web.client.ResourceAccessException;
 public class PropertyServiceImpl implements PropertyService {
 
   private final PropertyRepo propertyRepo;
-  
+  private final ModelMapper modelMapper;
+
   @Override
   @Transactional(readOnly = true)
   public List<Property> findAllProperties() {
@@ -35,9 +37,15 @@ public class PropertyServiceImpl implements PropertyService {
   }
 
   @Override
-  public Property create(Property property) {
+  public Property create(PropertyRequestDto propertyDto) {
+    Property property = modelMapper.map(propertyDto, Property.class);
     propertyRepo.save(property);
     return property;
+  }
+
+  @Override
+  public Property create(Property property) {
+    return propertyRepo.save(property);
   }
 
   @Override

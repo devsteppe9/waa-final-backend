@@ -3,9 +3,9 @@ package edu.miu.waa.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import edu.miu.waa.dto.request.PropertyRequestDto;
 import edu.miu.waa.dto.response.FileResourceDto;
-import edu.miu.waa.dto.response.PropertyDto;
-import edu.miu.waa.model.FileResource;
+import edu.miu.waa.dto.response.PropertyResponseDto;
 import edu.miu.waa.model.Property;
 import edu.miu.waa.service.FileResourceService;
 import edu.miu.waa.service.LocalStorageService;
@@ -13,10 +13,8 @@ import edu.miu.waa.service.PropertyService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,12 +61,12 @@ public class PropertyController {
   
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<PropertyDto> getPropertyById(@PathVariable long id) {
+  public ResponseEntity<PropertyResponseDto> getPropertyById(@PathVariable long id) {
     Optional<Property> property = propertyService.findPropertyById(id);
     if (!property.isPresent()) {
       return ResponseEntity.notFound().build();
     }
-    PropertyDto p = new PropertyDto(property.get());
+    PropertyResponseDto p = new PropertyResponseDto(property.get());
 
     p.getFileResources().forEach(fileResource -> {
       Link selfLink = WebMvcLinkBuilder.linkTo(method, fileResource.getStorageKey(), null).withSelfRel();
@@ -79,8 +77,8 @@ public class PropertyController {
   
   @PostMapping(consumes = "application/json")
   @ResponseStatus(HttpStatus.CREATED)
-  public Property create(@RequestBody Property property) {
-    return propertyService.create(property);
+  public Property create(@RequestBody PropertyRequestDto propertyDto) {
+    return propertyService.create(propertyDto);
   }
   
   @PutMapping("/{id}")
@@ -112,12 +110,21 @@ public class PropertyController {
   }
   
   @PostMapping(value = "/{id}/images", consumes = "multipart/form-data")
-  public Property uploadImage(@PathVariable long id, @RequestParam MultipartFile[] files)
+  @ResponseStatus(HttpStatus.CREATED)
+  public PropertyResponseDto uploadImage(@PathVariable long id, @RequestParam MultipartFile[] files)
       throws IOException {
     Property property = propertyService.findPropertyById(id)
         .orElseThrow(() -> new IllegalArgumentException("Property not found"));
     fileResourceService.saveFileResource(property, files);
-    return property;
+
+    PropertyResponseDto response = new PropertyResponseDto(property);
+
+    response.getFileResources().forEach(fileResource -> {
+      Link selfLink = WebMvcLinkBuilder.linkTo(method, fileResource.getStorageKey(), null).withSelfRel();
+      fileResource.add(selfLink);
+    });
+    
+    return response;
   }
   
   @GetMapping("/{id}/images")
