@@ -41,7 +41,19 @@ class PropertyControllerTest extends AbstractControllerTest {
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .content(
                         """
-{"name": "test", "description": "test", "price": 1560000000.0}"""))
+{"name": "test", 
+"description": "test", 
+"price": 1560000000.0,
+"address": "test",
+"state": "test",
+"zipcode": 12345,
+"city": "test",
+"country": "test",
+"totalBathrooms": 1,
+"totalBedrooms": 1,
+"totalArea": 1}
+}
+"""))
             .andExpect(status().isCreated())
             .andReturn();
     PropertyResponseDto property = objectMapper.readValue(resultCreate.getResponse().getContentAsString(),
@@ -50,6 +62,14 @@ class PropertyControllerTest extends AbstractControllerTest {
     assertEquals("test", property.getName());
     assertEquals("test", property.getDescription());
     assertEquals(Double.valueOf("1560000000.0"), property.getPrice());
+    assertEquals("test", property.getAddress());
+    assertEquals("test", property.getState());
+    assertEquals(Integer.valueOf(12345), property.getZipcode());
+    assertEquals("test", property.getCity());
+    assertEquals("test", property.getCountry());
+    assertEquals(1, property.getTotalBathrooms());
+    assertEquals(1, property.getTotalBedrooms());
+    assertEquals(1, property.getTotalArea());
   }
 
   @Test
