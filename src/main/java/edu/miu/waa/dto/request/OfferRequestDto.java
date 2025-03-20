@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OfferRequestDto {
 
-    private long id;
     private long propertyId;
     private Double offerAmount;
     private String message;

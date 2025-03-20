@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +27,9 @@ import edu.miu.waa.service.OfferService;
 public class OfferController {
 
     private final OfferService offerService;
-    private final Long currentUserId = 1L; // TODO: get current user id
+    private final Long currentUserId = 12L; // TODO: get current user id
+//    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//    Long userId = auth.getDetails().getId();
 
     @Autowired
     public OfferController(OfferService offerService) {
@@ -46,7 +50,7 @@ public class OfferController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Long create(OfferRequestDto offerRequestDto) {
+    public Long create(OfferRequestDto offerRequestDto) throws Exception {
         return offerService.create(currentUserId, offerRequestDto);
     }
 
