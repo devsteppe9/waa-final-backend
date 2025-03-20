@@ -41,7 +41,8 @@ public class OfferController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@PathVariable long id, @RequestBody OfferPatchRequestDto offerRequestDto) {
+    public Long update(@PathVariable long id, @RequestBody OfferPatchRequestDto offerRequestDto) {
         offerService.update(currentUserId, id, offerRequestDto);
+        return id;
     }
 }
