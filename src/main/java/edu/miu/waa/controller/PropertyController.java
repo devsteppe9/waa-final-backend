@@ -12,6 +12,7 @@ import edu.miu.waa.service.FileResourceService;
 import edu.miu.waa.service.LocalStorageService;
 import edu.miu.waa.service.OfferService;
 import edu.miu.waa.service.PropertyService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -63,15 +64,15 @@ public class PropertyController {
 
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<PropertyResponseDto> getPropertyById(@PathVariable long id) {
+  public ResponseEntity<PropertyResponseDto> getPropertyById(@PathVariable long id, HttpServletRequest request) {
     Optional<Property> property = propertyService.findPropertyById(id);
     if (!property.isPresent()) {
       return ResponseEntity.notFound().build();
     }
-    PropertyResponseDto p = new PropertyResponseDto(property.get());
-
+    PropertyResponseDto p = modelMapper.map(property.get(), PropertyResponseDto.class);
     p.getFileResources().forEach(fileResource -> {
       Link selfLink = WebMvcLinkBuilder.linkTo(method, fileResource.getStorageKey(), null).withSelfRel();
+      selfLink = selfLink.withHref(request.getContextPath() + selfLink.toUri().getRawPath());
       fileResource.add(selfLink);
     });
     return ResponseEntity.ok(p);
@@ -119,7 +120,7 @@ public class PropertyController {
         .orElseThrow(() -> new IllegalArgumentException("Property not found"));
     fileResourceService.saveFileResource(property, files);
 
-    PropertyResponseDto response = new PropertyResponseDto(property);
+    PropertyResponseDto response = modelMapper.map(property, PropertyResponseDto.class);
 
     response.getFileResources().forEach(fileResource -> {
       Link selfLink = WebMvcLinkBuilder.linkTo(method, fileResource.getStorageKey(), null).withSelfRel();
@@ -147,5 +148,4 @@ public class PropertyController {
   public List<OfferResponseDto> getOffersByPropertyId(@PathVariable long propertyId) {
     return offerService.findAllOffersByPropertyId(currentUserId, propertyId);
   }
-
 }
