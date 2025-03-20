@@ -32,9 +32,9 @@ public class Property {
   private Double price;
 
   @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
-  private List<FileResource> fileResources;
+  private List<FileResource> fileResources = new ArrayList<>();
 
   @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
-  private List<Offer> offers;
+  private List<Offer> offers = new ArrayList<>();
 
 }
