@@ -9,7 +9,9 @@ import java.util.List;
 
 public interface UserService extends UserDetailsService {
     List<UserOutDto> findAllUsers();
-    public User addUser(UserInDto user);
-    public User findByUsername(String username);
-    public boolean updateUserStatus(Long id, boolean status) ;
+    User addUser(UserInDto user);
+    User findByUsername(String username);
+    boolean updateUserStatus(Long id, boolean status) ;
+    User addUser(User user);
+    
 }

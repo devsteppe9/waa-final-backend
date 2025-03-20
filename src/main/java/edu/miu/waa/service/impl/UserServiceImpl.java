@@ -31,7 +31,6 @@ public class UserServiceImpl implements UserService {
 
     private final RoleRepo roleRepository;
 
-
     private final BCryptPasswordEncoder passwordEncoder;
 
     private final ListMapper listMapper;
@@ -64,6 +63,11 @@ public class UserServiceImpl implements UserService {
         User u = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         u.setEnabled(status);
         return true;
+    }
+
+    @Override
+    public User addUser(User user) {
+        return userRepository.save(user);
     }
 
     @Override
