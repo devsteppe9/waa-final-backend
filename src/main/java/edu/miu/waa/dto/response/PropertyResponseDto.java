@@ -27,7 +27,7 @@ public class PropertyResponseDto {
   private int totalBathrooms;
   private int totalBedrooms;
   private int totalArea;
-  private List<OfferResponseDto> offers = new ArrayList<>();
+  private List<OfferForPropertyResponseDto> offers = new ArrayList<>();
   private List<FileResourceDto> fileResources = new ArrayList<>();
   private LocalDateTime created;
   private Date expirationDate;
