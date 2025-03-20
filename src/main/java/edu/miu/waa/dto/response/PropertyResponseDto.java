@@ -2,6 +2,8 @@ package edu.miu.waa.dto.response;
 
 import edu.miu.waa.model.Offer;
 import edu.miu.waa.model.Property;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +31,7 @@ public class PropertyResponseDto {
   private int totalArea;
   private List<OfferResponseDto> offers = new ArrayList<>();
   private List<FileResourceDto> fileResources = new ArrayList<>();
-  
+  private UserOutDto owner;
   public PropertyResponseDto(Property property) {
     this.id = property.getId();
     this.name = property.getName();

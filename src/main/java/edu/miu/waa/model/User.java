@@ -26,6 +26,9 @@ public class User {
     @JoinTable
     private List<Role> roles = new ArrayList<>();
 
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    List<Property> properties;
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Offer> offers;
 
