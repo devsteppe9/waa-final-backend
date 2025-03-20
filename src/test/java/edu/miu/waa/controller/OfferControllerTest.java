@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Collections;
 
-import edu.miu.waa.dto.UserInDto;
+import edu.miu.waa.dto.request.UserInDto;
 import edu.miu.waa.dto.request.OfferRequestDto;
 import edu.miu.waa.service.OfferService;
 import edu.miu.waa.service.PropertyService;
