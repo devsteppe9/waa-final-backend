@@ -1,5 +1,6 @@
 package edu.miu.waa.controller;
 
+import edu.miu.waa.dto.response.FileResourceDto;
 import edu.miu.waa.model.FileResource;
 import edu.miu.waa.service.FileResourceService;
 import edu.miu.waa.service.LocalStorageService;
@@ -20,11 +21,20 @@ public class FileResourceController {
   
   private final FileResourceService fileResourceService;
   private final LocalStorageService localStorageService;
+  
+  @GetMapping("/{id}/")
+  public ResponseEntity<FileResourceDto> getFileResource(@PathVariable long id) {
+    FileResource fileResource = fileResourceService.getById(id);
+    return ResponseEntity.ok(new FileResourceDto(fileResource));
+  }
 
   @GetMapping("/{storageKey}")
   public ResponseEntity<Resource> getImage(@PathVariable String storageKey, HttpServletResponse response) {
     FileResource fileResource = fileResourceService.getByStorageKey(storageKey);
     
+    if (fileResource == null) {
+      return ResponseEntity.notFound().build();
+    }
     response.setContentType(fileResource.getContentType());
 
     response.setHeader(

@@ -5,7 +5,6 @@ import com.google.common.io.ByteSource;
 import edu.miu.waa.model.FileResource;
 import edu.miu.waa.model.Property;
 import edu.miu.waa.repo.FileResourceRepo;
-import edu.miu.waa.service.FileCloudService;
 import edu.miu.waa.service.FileResourceService;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileResourceServiceImpl implements FileResourceService {
   
   private final FileResourceRepo fileResourceRepo;
-  private final FileCloudService fileCloudService;
   private final LocalStorageServiceImpl localStorageService;
   
   @Override
@@ -68,23 +66,22 @@ public class FileResourceServiceImpl implements FileResourceService {
 
   @Override
   public long getFileResourceContentLength(FileResource fileResource) {
-    return fileCloudService.getFileResourceContentLength(fileResource.getStorageKey());
+    return fileResource.getContentLength();
   }
 
   @Override
   public void copyFileResourceContent(FileResource fileResource, OutputStream outputStream)
       throws NoSuchElementException, IOException {
-    fileCloudService.copyContent(fileResource.getStorageKey(), outputStream);
   }
 
   @Override
   public FileResource getById(long id) throws NoSuchElementException {
-    return fileResourceRepo.findById(id).orElseThrow(NoSuchElementException::new);
+    return fileResourceRepo.findById(id).orElseThrow(() -> new NoSuchElementException("FileResource not found"));
   }
 
   @Override
   public FileResource getByStorageKey(String storageKey) throws NoSuchElementException {
-    return fileResourceRepo.findByStorageKey(storageKey).orElseThrow(NoSuchElementException::new);
+    return fileResourceRepo.findByStorageKey(storageKey).orElse(null);
   }
 
   private static class MultipartFileByteSource extends ByteSource {

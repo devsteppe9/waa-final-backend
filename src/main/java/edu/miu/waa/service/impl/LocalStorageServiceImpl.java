@@ -13,7 +13,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -21,18 +23,14 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-@RequiredArgsConstructor
+@Slf4j
 public class LocalStorageServiceImpl implements LocalStorageService {
+  
   private final Path rootLocation;
 
-  @Autowired
-  public LocalStorageServiceImpl(StorageProperties properties) {
-
-    if(properties.getLocation().trim().length() == 0){
-      throw new StorageException("File upload location can not be Empty.");
-    }
-
-    this.rootLocation = Paths.get(properties.getLocation());
+  public LocalStorageServiceImpl(@Value("${upload-dir:uploads}") String externalDirectoryPath) {
+    this.rootLocation = Paths.get(externalDirectoryPath);
+    log.info("Local storage path: {}", externalDirectoryPath);
   }
 
   @Override
@@ -47,11 +45,7 @@ public class LocalStorageServiceImpl implements LocalStorageService {
       if (!Files.exists(destinationFile)) {
         Files.createDirectories(destinationFile);
       }
-//      if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
-//        // This is a security check
-//        throw new StorageException(
-//            "Cannot store file outside current directory.");
-//      }
+
       try (InputStream inputStream = file.getInputStream()) {
         Files.copy(inputStream, destinationFile,
             StandardCopyOption.REPLACE_EXISTING);
@@ -90,7 +84,7 @@ public class LocalStorageServiceImpl implements LocalStorageService {
       }
       else {
         throw new StorageFileNotFoundException(
-            "Could not read file: " + filename);
+            "Could not read file: " + filename + " in: " + rootLocation.getFileName());
 
       }
     }
