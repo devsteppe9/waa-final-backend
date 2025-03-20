@@ -1,6 +1,7 @@
 package edu.miu.waa.dto.response;
 
 import edu.miu.waa.model.PropertyStatus;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,8 +29,8 @@ public class PropertyResponseDto {
   private int totalArea;
   private List<OfferResponseDto> offers = new ArrayList<>();
   private List<FileResourceDto> fileResources = new ArrayList<>();
-  private Date created;
-  private Date expirationDate;
+  private LocalDateTime created;
+  private LocalDateTime expirationDate;
   private PropertyStatus status;
   private UserOutDto owner;
 }
