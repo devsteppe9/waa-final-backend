@@ -3,6 +3,8 @@ package edu.miu.waa.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import edu.miu.waa.dto.request.OfferPatchRequestDto;
+import edu.miu.waa.model.OfferStatusEnum;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,13 +64,12 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public void update(Long userId, long id, OfferRequestDto offerRequestDto) {
-        User user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    public void update(Long userId, long id, OfferPatchRequestDto offerRequestDto) {
         Offer offer = offerRepo.findByUserIdAndId(userId, id)
                 .orElseThrow(() -> new RuntimeException("Offer not found"));
-        modelMapper.map(offerRequestDto, offer);
-        offer.setUser(user);
+        OfferStatusEnum status = OfferStatusEnum.fromString(offerRequestDto.getStatus());
 
+        offer.setStatus(status);
         offerRepo.save(offer);
     }
 

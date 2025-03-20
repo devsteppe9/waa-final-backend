@@ -2,6 +2,7 @@ package edu.miu.waa.service;
 
 import java.util.List;
 
+import edu.miu.waa.dto.request.OfferPatchRequestDto;
 import edu.miu.waa.dto.request.OfferRequestDto;
 import edu.miu.waa.dto.response.OfferResponseDto;
 
@@ -12,7 +13,7 @@ public interface OfferService {
 
     Long create(Long userId, OfferRequestDto offerRequestDto);
 
-    void update(Long userId, long id, OfferRequestDto offerRequestDto);
+    void update(Long userId, long id, OfferPatchRequestDto offerRequestDto);
 
     void delete(Long userId, long id);
 
