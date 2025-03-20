@@ -1,8 +1,7 @@
 package edu.miu.waa.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.miu.waa.dto.UserInDto;
-import edu.miu.waa.model.Role;
+import edu.miu.waa.dto.request.UserInDto;
 import edu.miu.waa.model.User;
 import edu.miu.waa.repo.RoleRepo;
 import edu.miu.waa.security.dto.LoginRequest;

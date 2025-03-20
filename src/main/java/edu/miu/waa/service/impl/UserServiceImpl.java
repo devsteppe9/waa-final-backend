@@ -1,7 +1,7 @@
 package edu.miu.waa.service.impl;
 
-import edu.miu.waa.dto.UserInDto;
-import edu.miu.waa.dto.UserOutDto;
+import edu.miu.waa.dto.request.UserInDto;
+import edu.miu.waa.dto.response.UserOutDto;
 import edu.miu.waa.model.Role;
 import edu.miu.waa.model.User;
 import edu.miu.waa.repo.RoleRepo;
@@ -9,12 +9,12 @@ import edu.miu.waa.repo.UserRepo;
 import edu.miu.waa.service.UserService;
 import edu.miu.waa.util.ListMapper;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,9 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Service("userDetailsService")
 @Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepository;
@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepo roleRepository;
 
 
-    private final PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     private final ListMapper listMapper;
 

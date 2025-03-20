@@ -2,7 +2,7 @@ package edu.miu.waa.dto.response;
 
 import java.time.LocalDate;
 
-import edu.miu.waa.dto.UserOutDto;
+import edu.miu.waa.dto.response.UserOutDto;
 import edu.miu.waa.model.OfferStatusEnum;
 import edu.miu.waa.model.Property;
 import lombok.AllArgsConstructor;

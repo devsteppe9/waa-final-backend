@@ -1,6 +1,6 @@
 package edu.miu.waa.config;
 
-import edu.miu.waa.dto.UserOutDto;
+import edu.miu.waa.dto.response.UserOutDto;
 import edu.miu.waa.model.User;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
