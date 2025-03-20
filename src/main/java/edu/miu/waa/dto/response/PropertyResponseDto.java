@@ -31,5 +31,5 @@ public class PropertyResponseDto {
   private Date created;
   private Date expirationDate;
   private PropertyStatus status;
-  private UserOutDto user;
+  private UserOutDto owner;
 }

@@ -58,13 +58,13 @@ public class Property {
   private LocalDateTime created;
 
   @Temporal(TemporalType.TIMESTAMP)
-  private Date expirationDate;
+  private LocalDateTime expirationDate;
   
   private PropertyStatus status;
   
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")
-  private User user;
+  private User owner;
   
   @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
   private List<FileResource> fileResources = new ArrayList<>();

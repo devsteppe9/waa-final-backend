@@ -32,9 +32,6 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Offer> offers;
     
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Property> properties = new ArrayList<>();
-
     @Override
     public String toString() {
         return username;

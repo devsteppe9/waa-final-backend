@@ -74,8 +74,9 @@ public class PropertyController {
 
   @PostMapping(consumes = "application/json")
   @ResponseStatus(HttpStatus.CREATED)
-  public Property create(@RequestBody PropertyRequestDto propertyDto) {
-    return propertyService.create(propertyDto);
+  public PropertyResponseDto create(@RequestBody PropertyRequestDto propertyDto) {
+    Property property = propertyService.create(propertyDto);
+    return modelMapper.map(property, PropertyResponseDto.class);
   }
 
   @PutMapping("/{id}")

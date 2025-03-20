@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import edu.miu.waa.WaaApplication;
 import edu.miu.waa.dto.request.PropertyRequestDto;
 import edu.miu.waa.model.Property;
+import edu.miu.waa.model.PropertyStatus;
 import edu.miu.waa.model.User;
 import edu.miu.waa.repo.PropertyRepo;
 import edu.miu.waa.security.service.CurrentUserService;
@@ -43,10 +44,11 @@ public class PropertyServiceImpl implements PropertyService {
 
   @Override
   public Property create(PropertyRequestDto propertyDto) {
-    User currentUser = currentUserService.getCurrentUser();
+    User currentUser = currentUserService.getCurrentUser("owner");
     Property property = modelMapper.map(propertyDto, Property.class);
-    property.setUser(currentUser);
+    property.setOwner(currentUser);
     property.setCreated(LocalDateTime.now());
+    property.setStatus(property.getStatus() != null ? property.getStatus() : PropertyStatus.AVAILABLE);
     propertyRepo.save(property);
     return property;
   }

@@ -18,4 +18,10 @@ public class CurrentUserService {
       UserDetails userDetails = CurrentUserUtil.getCurrentUserDetails();
       return userRepo.findUserByUsername(userDetails.getUsername());
     }
+    
+    // TODO: Remove this method when service layer is implemented
+    @Transactional(readOnly = true)
+    public User getCurrentUser(String username) {
+      return userRepo.findUserByUsername(username);
+    }
 }
