@@ -1,9 +1,8 @@
 package edu.miu.waa.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.miu.waa.dto.UserInDto;
-import edu.miu.waa.dto.UserOutDto;
-import edu.miu.waa.model.User;
+import edu.miu.waa.dto.request.UserInDto;
+import edu.miu.waa.dto.response.UserOutDto;
 import edu.miu.waa.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

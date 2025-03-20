@@ -1,6 +1,6 @@
 package edu.miu.waa.security.dto;
 
-import edu.miu.waa.dto.UserOutDto;
+import edu.miu.waa.dto.response.UserOutDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
