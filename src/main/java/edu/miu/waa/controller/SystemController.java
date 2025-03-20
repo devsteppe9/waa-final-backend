@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/system")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
 public class SystemController {
 
     @Autowired

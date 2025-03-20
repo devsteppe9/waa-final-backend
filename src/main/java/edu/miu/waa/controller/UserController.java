@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*", exposedHeaders = "Authorization")
 @RequiredArgsConstructor
 public class UserController {
 
