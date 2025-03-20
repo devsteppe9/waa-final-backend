@@ -15,8 +15,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtUtil {
 
-    @Autowired
-    UserService userDetailsService;
     private final String secret = "top-secret";
     private final long expiration = 1000 * 60 * 60 * 60 * 5; //5 hours
     //     private final long expiration = 5;
@@ -33,7 +31,7 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
 
-    private Claims getAllClaimsFromToken(String token) {
+    public Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)
@@ -132,16 +130,6 @@ public class JwtUtil {
         return false;
     }
 
-    public Authentication getAuthentication(String token) {
-        if (!isAccessToken(token)) {
-            return null; // or throw an exception indicating invalid token type
-        }
-        Claims claims = getAllClaimsFromToken(token);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
-        return new UsernamePasswordAuthenticationToken(
-                userDetails, null, userDetails.getAuthorities());
-    }
-
 
     public String doGenerateRefreshToken(Map<String, Object> claims, String subject) {
 
@@ -167,6 +155,7 @@ public class JwtUtil {
         }
         return result;
     }
+
 }
 
 

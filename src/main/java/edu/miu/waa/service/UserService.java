@@ -1,7 +1,7 @@
 package edu.miu.waa.service;
 
-import edu.miu.waa.dto.UserOutDto;
-import edu.miu.waa.dto.UserInDto;
+import edu.miu.waa.dto.response.UserOutDto;
+import edu.miu.waa.dto.request.UserInDto;
 import edu.miu.waa.model.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 

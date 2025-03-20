@@ -1,10 +1,11 @@
 package edu.miu.waa.security.service.impl;
 
-import edu.miu.waa.dto.UserOutDto;
+import edu.miu.waa.dto.response.UserOutDto;
 import edu.miu.waa.security.dto.LoginRequest;
 import edu.miu.waa.security.dto.RefreshTokenRequest;
 import edu.miu.waa.security.dto.LoginResponse;
 import edu.miu.waa.service.UserService;
+import edu.miu.waa.service.impl.UserServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseCookie;
 import edu.miu.waa.security.service.AuthService;
@@ -16,7 +17,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +25,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final JwtUtil jwtUtil;
     private final ModelMapper modelMapper;
 

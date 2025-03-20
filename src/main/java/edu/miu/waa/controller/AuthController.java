@@ -1,6 +1,6 @@
 package edu.miu.waa.controller;
 
-import edu.miu.waa.dto.UserInDto;
+import edu.miu.waa.dto.request.UserInDto;
 import edu.miu.waa.security.dto.LoginRequest;
 import edu.miu.waa.security.dto.LoginResponse;
 import edu.miu.waa.security.dto.RefreshTokenRequest;

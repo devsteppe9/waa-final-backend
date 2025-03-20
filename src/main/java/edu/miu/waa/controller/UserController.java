@@ -1,6 +1,6 @@
 package edu.miu.waa.controller;
 
-import edu.miu.waa.dto.UserOutDto;
+import edu.miu.waa.dto.response.UserOutDto;
 import edu.miu.waa.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package edu.miu.waa.dto;
+package edu.miu.waa.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

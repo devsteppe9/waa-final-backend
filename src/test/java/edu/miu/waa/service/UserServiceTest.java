@@ -1,6 +1,6 @@
 package edu.miu.waa.service;
 
-import edu.miu.waa.dto.UserInDto;
+import edu.miu.waa.dto.request.UserInDto;
 import edu.miu.waa.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
