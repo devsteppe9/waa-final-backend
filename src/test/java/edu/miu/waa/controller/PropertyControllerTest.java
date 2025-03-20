@@ -12,8 +12,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.miu.waa.dto.response.PropertyResponseDto;
+import edu.miu.waa.model.Favourite;
 import edu.miu.waa.model.Property;
 import edu.miu.waa.model.PropertyStatus;
+import edu.miu.waa.model.Role;
+import edu.miu.waa.model.User;
 import edu.miu.waa.service.PropertyService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,11 +185,19 @@ class PropertyControllerTest extends AbstractControllerTest {
     assertEquals("AVAILABLE", property.getStatus());
   }
   
-  private Property createProperty(String name) {
-    Property p = new Property();
-    p.setName(name);
-    propertyService.create(p);
-    return p;
+  @Test
+  void testGetWithFavs() throws Exception {
+    Property property = createProperty("test1");
+    User user = createUser("jack", "CUSTOMER");
+    Favourite favourite = new Favourite();
+    favourite.setUser(user);
+    favourite.setProperty(property);
+
+    MvcResult result = mockMvc.perform(get("/api/v1/properties?withFavs=true")).andExpect(status().isOk()).andReturn();
+    PropertyResponseDto[] properties = objectMapper.readValue(result.getResponse().getContentAsString(),
+        PropertyResponseDto[].class);
+    assertEquals(1, properties.length);
+    assertEquals(favourite.getId(), properties[0].getFavouriteId());
   }
   
 }

@@ -24,6 +24,11 @@ public class FavouriteServiceImpl implements FavouriteService {
   }
 
   @Override
+  public List<Favourite> findByUserAndProperties(User user, List<Property> properties) {
+    return favouriteRepo.findByUserAndProperties(user, properties);
+  }
+
+  @Override
   public List<Favourite> findByProperty(Property property) {
     return favouriteRepo.findByProperty(property);
   }
@@ -46,5 +51,13 @@ public class FavouriteServiceImpl implements FavouriteService {
   @Override
   public Optional<Favourite> findById(long id) {
     return favouriteRepo.findById(id);
+  }
+
+  @Override
+  public Favourite create(User user, Property property) {
+    Favourite favourite = new Favourite();
+    favourite.setUser(user);
+    favourite.setProperty(property);
+    return favouriteRepo.save(favourite);
   }
 }

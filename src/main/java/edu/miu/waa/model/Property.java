@@ -2,6 +2,7 @@ package edu.miu.waa.model;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -10,6 +11,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -35,6 +38,7 @@ public class Property {
 
   private String name;
 
+  @Column(length = 10000)
   private String description;
   
   private Double price;
@@ -73,7 +77,4 @@ public class Property {
 
   @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
   private List<Offer> offers = new ArrayList<>();
-  
-  @ManyToMany(fetch = FetchType.LAZY)
-  private List<Favourite> favourites = new ArrayList<>();
 }
