@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,11 +28,13 @@ public class Property {
   private String name;
 
   private String description;
+  
+  private Double price;
 
   @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
-  private List<FileResource> fileResources;
+  private List<FileResource> fileResources = new ArrayList<>();
 
   @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
-  private List<Offer> offers;
+  private List<Offer> offers = new ArrayList<>();
 
 }

@@ -18,7 +18,7 @@ public class OfferResponseDto {
     private Double offerAmount;
     private String message;
 
-    private Property property;
+    private PropertyResponseDto property;
     private UserOutDto user;
     private OfferStatusEnum status;
 }
