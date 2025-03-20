@@ -1,19 +1,20 @@
 package edu.miu.waa.dto.response;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import edu.miu.waa.model.PropertyStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PropertyResponseDto {
+public class PropertyOfferResponseDto {
   private Long id;
   private String name;
   private String description;
@@ -26,11 +27,8 @@ public class PropertyResponseDto {
   private int totalBathrooms;
   private int totalBedrooms;
   private int totalArea;
-  private List<OfferForPropertyResponseDto> offers = new ArrayList<>();
   private List<FileResourceDto> fileResources = new ArrayList<>();
-  private LocalDateTime created;
+  private Date created;
   private Date expirationDate;
-  private String status;
-  private UserOutDto owner;
-  private long favouriteId;
+  private PropertyStatus status;
 }
