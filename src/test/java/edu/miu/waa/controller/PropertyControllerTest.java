@@ -2,7 +2,6 @@ package edu.miu.waa.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -59,8 +58,8 @@ class PropertyControllerTest extends AbstractControllerTest {
     createProperty("test2");
     
     MvcResult result = mockMvc.perform(get("/api/v1/properties")).andExpect(status().isOk()).andReturn();
-    Property[] properties = objectMapper.readValue(result.getResponse().getContentAsString(),
-        Property[].class);
+    PropertyResponseDto[] properties = objectMapper.readValue(result.getResponse().getContentAsString(),
+        PropertyResponseDto[].class);
     assertEquals(2, properties.length);
   }
   
@@ -69,8 +68,8 @@ class PropertyControllerTest extends AbstractControllerTest {
     Property p = createProperty("test");
 
     MvcResult result = mockMvc.perform(get("/api/v1/properties/" + p.getId())).andExpect(status().isOk()).andReturn();
-    Property property = objectMapper.readValue(result.getResponse().getContentAsString(),
-        Property.class);
+    PropertyResponseDto property = objectMapper.readValue(result.getResponse().getContentAsString(),
+        PropertyResponseDto.class);
     assertEquals(p.getName(), property.getName());
   }
   
@@ -89,8 +88,8 @@ class PropertyControllerTest extends AbstractControllerTest {
 
 
     MvcResult result = mockMvc.perform(get("/api/v1/properties/" + p.getId())).andExpect(status().isOk()).andReturn();
-    Property property = objectMapper.readValue(result.getResponse().getContentAsString(),
-        Property.class);
+    PropertyResponseDto property = objectMapper.readValue(result.getResponse().getContentAsString(),
+        PropertyResponseDto.class);
     assertEquals("test2", property.getName());
   }
   
@@ -115,8 +114,8 @@ class PropertyControllerTest extends AbstractControllerTest {
 
 
     MvcResult result = mockMvc.perform(get("/api/v1/properties/" + p.getId())).andExpect(status().isOk()).andReturn();
-    Property property = objectMapper.readValue(result.getResponse().getContentAsString(),
-        Property.class);
+    PropertyResponseDto property = objectMapper.readValue(result.getResponse().getContentAsString(),
+        PropertyResponseDto.class);
     assertEquals("test2", property.getName());
     
   }
