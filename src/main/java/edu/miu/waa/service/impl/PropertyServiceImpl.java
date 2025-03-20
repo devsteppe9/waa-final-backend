@@ -33,7 +33,7 @@ public class PropertyServiceImpl implements PropertyService {
   @Override
   @Transactional(readOnly = true)
   public List<Property> findAllProperties() {
-    return propertyRepo.findAll();
+    return propertyRepo.findAllPropertiesSortByCreated_Desc();
   }
 
   @Override
@@ -59,7 +59,7 @@ public class PropertyServiceImpl implements PropertyService {
   }
 
   @Override
-  public void updateById(long id, Property property) {
+  public void updateById(long id, PropertyRequestDto property) {
     
     Property persistedProperty =
         propertyRepo

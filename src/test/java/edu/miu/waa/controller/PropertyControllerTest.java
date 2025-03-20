@@ -25,8 +25,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 class PropertyControllerTest extends AbstractControllerTest {
   
-  private final ObjectMapper objectMapper = new ObjectMapper();
-  
   @Autowired
   private PropertyService propertyService;
   
@@ -70,7 +68,7 @@ class PropertyControllerTest extends AbstractControllerTest {
     assertEquals(1, property.getTotalBathrooms());
     assertEquals(1, property.getTotalBedrooms());
     assertEquals(1, property.getTotalArea());
-    assertEquals(PropertyStatus.AVAILABLE, property.getStatus());
+    assertEquals(PropertyStatus.AVAILABLE.toString(), property.getStatus());
   }
 
   @Test
@@ -162,6 +160,26 @@ class PropertyControllerTest extends AbstractControllerTest {
     byte[] file = result.getResponse().getContentAsByteArray();
     assertNotNull(file);
     assertTrue(file.length > 0);
+  }
+  
+  @Test
+  void testPatchStatus() throws Exception {
+    Property p = createProperty("test");
+
+    mockMvc.perform(
+            patch("/api/v1/properties/{id}",
+                p.getId())
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .content("""
+                    {"name": "test2", "status":"AVAILABLE"}"""))
+        .andExpect(status().isOk());
+
+
+    MvcResult result = mockMvc.perform(get("/api/v1/properties/" + p.getId())).andExpect(status().isOk()).andReturn();
+    PropertyResponseDto property = objectMapper.readValue(result.getResponse().getContentAsString(),
+        PropertyResponseDto.class);
+    assertEquals("test2", property.getName());
+    assertEquals("AVAILABLE", property.getStatus());
   }
   
   private Property createProperty(String name) {

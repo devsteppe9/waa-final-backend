@@ -11,7 +11,7 @@ public interface PropertyService {
   Optional<Property> findPropertyById(long id);
   Property create(PropertyRequestDto property);
   Property create(Property property);
-  void updateById(long id, Property property);
+  void updateById(long id, PropertyRequestDto property);
   void delete(Property property);
   Property patch(long id, String jsonPatch) throws JsonProcessingException;
 }

@@ -49,7 +49,6 @@ public class PropertyController {
   private final ModelMapper modelMapper;
   private final PropertyService propertyService;
   private final FileResourceService fileResourceService;
-  private final LocalStorageService localStorageService;
   private final OfferService offerService;
   private final Long currentUserId = 1L; // TODO: get current user id
   
@@ -82,7 +81,7 @@ public class PropertyController {
 
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public void update(@PathVariable long id, @RequestBody Property property) {
+  public void update(@PathVariable long id, @RequestBody PropertyRequestDto property) {
     propertyService.updateById(id, property);
   }
 

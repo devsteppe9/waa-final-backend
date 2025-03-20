@@ -1,7 +1,5 @@
 package edu.miu.waa.dto.request;
 
-import edu.miu.waa.dto.response.UserOutDto;
-import edu.miu.waa.model.PropertyStatus;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,4 +21,5 @@ public class PropertyRequestDto {
   private int totalBedrooms;
   private int totalArea;
   private Date expirationDate;
+  private String status;
 }
