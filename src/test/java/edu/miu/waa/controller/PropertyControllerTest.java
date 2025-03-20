@@ -25,8 +25,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 class PropertyControllerTest extends AbstractControllerTest {
   
-  private final ObjectMapper objectMapper = new ObjectMapper();
-  
   @Autowired
   private PropertyService propertyService;
   
