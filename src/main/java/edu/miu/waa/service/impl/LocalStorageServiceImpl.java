@@ -1,20 +1,18 @@
 package edu.miu.waa.service.impl;
 
 import edu.miu.waa.service.LocalStorageService;
-import edu.miu.waa.service.StorageProperties;
 import edu.miu.waa.service.exception.StorageException;
 import edu.miu.waa.service.exception.StorageFileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -74,6 +72,18 @@ public class LocalStorageServiceImpl implements LocalStorageService {
     return rootLocation.resolve(filename);
   }
 
+  @Override
+  public void copyFileResourceContent(String key, OutputStream outputStream) {
+    Path file = load(key);
+    try (InputStream inputStream = Files.newInputStream(file)){
+      if (inputStream != null) {
+        org.apache.commons.io.IOUtils.copy(inputStream, outputStream);
+      }
+    } catch (IOException e) {
+      log.error("Failed to copy file resource content", e);
+    }
+  }
+  
   @Override
   public Resource loadAsResource(String filename) {
     try {

@@ -15,7 +15,7 @@ import org.springframework.hateoas.RepresentationModel;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FileResourceDto extends RepresentationModel<FileResourceDto> {
+public class FileResourceDto {
   private long id;
   private String name;
   private long contentLength;
@@ -24,6 +24,7 @@ public class FileResourceDto extends RepresentationModel<FileResourceDto> {
   private String storageKey;
   private String contentMd5;
   private long propertyId;
+  private String href;
   
   public FileResourceDto(FileResource fileResource) {
     this.id = fileResource.getId();

@@ -1,6 +1,8 @@
 package edu.miu.waa.controller;
 
 
+import static edu.miu.waa.util.HttpServletRequestPaths.generateFileResourceLink;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import edu.miu.waa.dto.request.PropertyRequestDto;
@@ -13,20 +15,15 @@ import edu.miu.waa.service.LocalStorageService;
 import edu.miu.waa.service.OfferService;
 import edu.miu.waa.service.PropertyService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,7 +50,6 @@ public class PropertyController {
   private final FileResourceService fileResourceService;
   private final LocalStorageService localStorageService;
   private final OfferService offerService;
-  private static Method method = ReflectionUtils.findMethod(FileResourceController.class, "getImage", String.class, HttpServletResponse.class);
   private final Long currentUserId = 1L; // TODO: get current user id
   
   @GetMapping
@@ -71,9 +67,7 @@ public class PropertyController {
     }
     PropertyResponseDto p = modelMapper.map(property.get(), PropertyResponseDto.class);
     p.getFileResources().forEach(fileResource -> {
-      Link selfLink = WebMvcLinkBuilder.linkTo(method, fileResource.getStorageKey(), null).withSelfRel();
-      selfLink = selfLink.withHref(request.getContextPath() + selfLink.toUri().getRawPath());
-      fileResource.add(selfLink);
+      fileResource.setHref(generateFileResourceLink(fileResource.getStorageKey(), request));
     });
     return ResponseEntity.ok(p);
   }
@@ -114,7 +108,7 @@ public class PropertyController {
 
   @PostMapping(value = "/{id}/images", consumes = "multipart/form-data")
   @ResponseStatus(HttpStatus.CREATED)
-  public PropertyResponseDto uploadImage(@PathVariable long id, @RequestParam MultipartFile[] files)
+  public PropertyResponseDto uploadImage(@PathVariable long id, @RequestParam MultipartFile[] files, HttpServletRequest request)
       throws IOException {
     Property property = propertyService.findPropertyById(id)
         .orElseThrow(() -> new IllegalArgumentException("Property not found"));
@@ -123,22 +117,20 @@ public class PropertyController {
     PropertyResponseDto response = modelMapper.map(property, PropertyResponseDto.class);
 
     response.getFileResources().forEach(fileResource -> {
-      Link selfLink = WebMvcLinkBuilder.linkTo(method, fileResource.getStorageKey(), null).withSelfRel();
-      fileResource.add(selfLink);
+      fileResource.setHref(generateFileResourceLink(fileResource.getStorageKey(), request));
     });
     
     return response;
   }
 
   @GetMapping("/{id}/images")
-  public List<FileResourceDto> getImages(@PathVariable long id) {
+  public List<FileResourceDto> getImages(@PathVariable long id, HttpServletRequest request) {
     Property property = propertyService.findPropertyById(id)
         .orElseThrow(() -> new IllegalArgumentException("Property not found"));
     return property.getFileResources().stream()
         .map((element) -> {
           FileResourceDto dto = modelMapper.map(element, FileResourceDto.class);
-        Link selfLink = WebMvcLinkBuilder.linkTo(method, dto.getStorageKey(), null).withSelfRel();
-        dto.add(selfLink);
+        dto.setHref(generateFileResourceLink(element.getStorageKey(), request));
         return dto;
     }).collect(Collectors.toList());
   }
@@ -148,4 +140,5 @@ public class PropertyController {
   public List<OfferResponseDto> getOffersByPropertyId(@PathVariable long propertyId) {
     return offerService.findAllOffersByPropertyId(currentUserId, propertyId);
   }
+  
 }
