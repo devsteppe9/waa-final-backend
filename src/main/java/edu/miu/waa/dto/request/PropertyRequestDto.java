@@ -19,4 +19,5 @@ public class PropertyRequestDto {
   private int totalBathrooms;
   private int totalBedrooms;
   private int totalArea;
+  private Long ownerId;
 }
