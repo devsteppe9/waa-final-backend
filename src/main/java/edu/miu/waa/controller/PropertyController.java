@@ -1,21 +1,32 @@
 package edu.miu.waa.controller;
 
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import edu.miu.waa.model.FileResource;
+import edu.miu.waa.dto.request.PropertyRequestDto;
+import edu.miu.waa.dto.response.FileResourceDto;
+import edu.miu.waa.dto.response.OfferResponseDto;
+import edu.miu.waa.dto.response.PropertyResponseDto;
 import edu.miu.waa.model.Property;
 import edu.miu.waa.service.FileResourceService;
 import edu.miu.waa.service.LocalStorageService;
+import edu.miu.waa.service.OfferService;
 import edu.miu.waa.service.PropertyService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
+import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,38 +47,49 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Slf4j
 public class PropertyController {
-  
+
+  private final ModelMapper modelMapper;
   private final PropertyService propertyService;
   private final FileResourceService fileResourceService;
   private final LocalStorageService localStorageService;
+  private final OfferService offerService;
+  private static Method method = ReflectionUtils.findMethod(FileResourceController.class, "getImage", String.class, HttpServletResponse.class);
+  private final Long currentUserId = 1L; // TODO: get current user id
   
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   public List<Property> getAllProperties() {
     return propertyService.findAllProperties();
   }
-  
+
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<Property> getPropertyById(@PathVariable long id) {
-    return propertyService.findPropertyById(id)
-        .map(ResponseEntity::ok)
-        .orElse(ResponseEntity.notFound().build());
+  public ResponseEntity<PropertyResponseDto> getPropertyById(@PathVariable long id, HttpServletRequest request) {
+    Optional<Property> property = propertyService.findPropertyById(id);
+    if (!property.isPresent()) {
+      return ResponseEntity.notFound().build();
+    }
+    PropertyResponseDto p = modelMapper.map(property.get(), PropertyResponseDto.class);
+    p.getFileResources().forEach(fileResource -> {
+      Link selfLink = WebMvcLinkBuilder.linkTo(method, fileResource.getStorageKey(), null).withSelfRel();
+      selfLink = selfLink.withHref(request.getContextPath() + selfLink.toUri().getRawPath());
+      fileResource.add(selfLink);
+    });
+    return ResponseEntity.ok(p);
   }
-  
+
   @PostMapping(consumes = "application/json")
   @ResponseStatus(HttpStatus.CREATED)
-  public Long create(Property property) {
-    propertyService.create(property);
-    return property.getId();
+  public Property create(@RequestBody PropertyRequestDto propertyDto) {
+    return propertyService.create(propertyDto);
   }
-  
+
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public void update(@PathVariable long id, @RequestBody Property property) {
     propertyService.updateById(id, property);
   }
-  
+
   @PatchMapping(value = "/{id}", consumes = "application/json")
   public ResponseEntity patch(@PathVariable long id, @RequestBody String jsonPatch) {
     try {
@@ -79,29 +101,51 @@ public class PropertyController {
     }
     return ResponseEntity.ok().build();
   }
-  
+
   @DeleteMapping("/{id}")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void deletePropertyById(@PathVariable long id) {
-    Property property = propertyService.findPropertyById(id)
-        .orElseThrow(() -> new IllegalArgumentException("Property not found"));
-    propertyService.delete(property);
+  public ResponseEntity deletePropertyById(@PathVariable long id) {
+    Optional<Property> property = propertyService.findPropertyById(id);
+    if (!property.isPresent()) {
+      return ResponseEntity.notFound().build();
+    }
+    propertyService.delete(property.get());
+    return ResponseEntity.noContent().build();
   }
-  
+
   @PostMapping(value = "/{id}/images", consumes = "multipart/form-data")
-  public void uploadImage(@PathVariable long id, @RequestParam MultipartFile[] files)
+  @ResponseStatus(HttpStatus.CREATED)
+  public PropertyResponseDto uploadImage(@PathVariable long id, @RequestParam MultipartFile[] files)
       throws IOException {
     Property property = propertyService.findPropertyById(id)
         .orElseThrow(() -> new IllegalArgumentException("Property not found"));
     fileResourceService.saveFileResource(property, files);
+
+    PropertyResponseDto response = modelMapper.map(property, PropertyResponseDto.class);
+
+    response.getFileResources().forEach(fileResource -> {
+      Link selfLink = WebMvcLinkBuilder.linkTo(method, fileResource.getStorageKey(), null).withSelfRel();
+      fileResource.add(selfLink);
+    });
+    
+    return response;
   }
-  
+
   @GetMapping("/{id}/images")
-  public List<FileResource> getImages(@PathVariable long id) {
+  public List<FileResourceDto> getImages(@PathVariable long id) {
     Property property = propertyService.findPropertyById(id)
         .orElseThrow(() -> new IllegalArgumentException("Property not found"));
-    
-    return property.getFileResources();
+    return property.getFileResources().stream()
+        .map((element) -> {
+          FileResourceDto dto = modelMapper.map(element, FileResourceDto.class);
+        Link selfLink = WebMvcLinkBuilder.linkTo(method, dto.getStorageKey(), null).withSelfRel();
+        dto.add(selfLink);
+        return dto;
+    }).collect(Collectors.toList());
   }
-  
+
+  @GetMapping("/{propertyId}/offers")
+  @ResponseStatus(HttpStatus.OK)
+  public List<OfferResponseDto> getOffersByPropertyId(@PathVariable long propertyId) {
+    return offerService.findAllOffersByPropertyId(currentUserId, propertyId);
+  }
 }

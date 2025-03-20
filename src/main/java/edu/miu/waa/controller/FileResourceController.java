@@ -1,11 +1,9 @@
 package edu.miu.waa.controller;
 
 import edu.miu.waa.model.FileResource;
-import edu.miu.waa.model.Property;
 import edu.miu.waa.service.FileResourceService;
 import edu.miu.waa.service.LocalStorageService;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -24,7 +22,7 @@ public class FileResourceController {
   private final LocalStorageService localStorageService;
 
   @GetMapping("/{storageKey}")
-  public ResponseEntity<Resource> getImages(@PathVariable String storageKey, HttpServletResponse response) {
+  public ResponseEntity<Resource> getImage(@PathVariable String storageKey, HttpServletResponse response) {
     FileResource fileResource = fileResourceService.getByStorageKey(storageKey);
     
     response.setContentType(fileResource.getContentType());

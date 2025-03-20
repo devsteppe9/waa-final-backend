@@ -1,5 +1,8 @@
 # Group 3 - waa-final-backend
 
+[![Unit Tests](https://github.com/devsteppe9/waa-final-backend/actions/workflows/unit-test.yaml/badge.svg)](https://github.com/devsteppe9/waa-final-backend/actions/workflows/unit-test.yaml) 
+[![Deploy to kubernetes cluster](https://github.com/devsteppe9/waa-final-backend/actions/workflows/main.yaml/badge.svg)](https://github.com/devsteppe9/waa-final-backend/actions/workflows/main.yaml)
+
 ## Running the Application with Docker Compose
 
 ### Building and Running the Database and Backend

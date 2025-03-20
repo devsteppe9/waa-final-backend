@@ -48,6 +48,7 @@ public class FileResourceServiceImpl implements FileResourceService {
       String storageKey = UUID.randomUUID().toString();
       fileResource.setStorageKey(storageKey);
       fileResourceRepo.save(fileResource);
+      property.getFileResources().add(fileResource);
 
       // save file content
       localStorageService.store(file, storageKey);

@@ -10,9 +10,11 @@ public interface OfferService {
 
     OfferResponseDto findOfferById(Long userId, Long id);
 
-    Long create(OfferRequestDto offerRequestDto);
+    Long create(Long userId, OfferRequestDto offerRequestDto);
 
     void update(Long userId, long id, OfferRequestDto offerRequestDto);
 
     void delete(Long userId, long id);
+
+    List<OfferResponseDto> findAllOffersByPropertyId(Long userId, Long propertyId);
 }
