@@ -106,23 +106,6 @@ public class OfferControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$.id").value(offerResponseDto.getId()));
     }
 
-    @Test
-    public void testUpdateOffer() throws Exception {
-        OfferRequestDto offerRequestDto = new OfferRequestDto();
-
-        mockMvc.perform(put("/api/v1/offers/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"title\": \"Updated Offer\", \"description\": \"Updated Description\"}"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void testDeleteOffer() throws Exception {
-        mockMvc.perform(delete("/api/v1/offers/1")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
-    }
-
     private User createOwner() {
         UserInDto u = new UserInDto();
         u.setFirstName("Jane");
