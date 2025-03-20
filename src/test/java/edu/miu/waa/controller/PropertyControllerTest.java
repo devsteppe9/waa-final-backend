@@ -52,7 +52,6 @@ class PropertyControllerTest extends AbstractControllerTest {
 "totalBathrooms": 1,
 "totalBedrooms": 1,
 "totalArea": 1}
-}
 """))
             .andExpect(status().isCreated())
             .andReturn();
