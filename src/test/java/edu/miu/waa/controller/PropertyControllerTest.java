@@ -2,6 +2,7 @@ package edu.miu.waa.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -12,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.miu.waa.dto.response.PropertyResponseDto;
 import edu.miu.waa.model.Property;
+import edu.miu.waa.repo.FileResourceRepo;
 import edu.miu.waa.service.PropertyService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,6 +157,11 @@ class PropertyControllerTest extends AbstractControllerTest {
     assertEquals("test.txt", property.getFileResources().get(0).getFileName());
     assertNotNull(property.getFileResources().get(0).getStorageKey());
     assertNotNull(property.getFileResources().get(0).getLinks().stream().toList().get(0).getHref());
+    String storageKey = property.getFileResources().get(0).getStorageKey();
+    MvcResult result = mockMvc.perform(get("/api/v1/file-resources/%s".formatted(storageKey))).andExpect(status().isOk()).andReturn();
+    byte[] file = result.getResponse().getContentAsByteArray();
+    assertNotNull(file);
+    assertTrue(file.length > 0);
   }
   
   private Property createProperty(String name) {
