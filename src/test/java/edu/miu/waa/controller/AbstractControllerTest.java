@@ -1,5 +1,8 @@
 package edu.miu.waa.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.miu.waa.WaaApplication;
 import edu.miu.waa.config.TestSecurityConfig;
 import edu.miu.waa.model.Role;
@@ -9,6 +12,7 @@ import edu.miu.waa.service.UserService;
 import java.util.Optional;
 import org.apiguardian.api.API;
 import org.checkerframework.checker.units.qual.A;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,6 +33,14 @@ public class AbstractControllerTest {
   
   @Autowired
   protected UserService userService;
+
+  protected ObjectMapper objectMapper = new ObjectMapper();
+  
+  @BeforeEach
+  protected void init() {
+    objectMapper.registerModule(new JavaTimeModule());
+    objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+  }
   
   protected Role getRole(String role) {
     Optional<Role> persisted = roleRepo.findRoleByRole(role);

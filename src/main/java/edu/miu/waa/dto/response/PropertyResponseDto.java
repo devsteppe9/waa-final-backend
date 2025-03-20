@@ -30,7 +30,7 @@ public class PropertyResponseDto {
   private List<OfferResponseDto> offers = new ArrayList<>();
   private List<FileResourceDto> fileResources = new ArrayList<>();
   private LocalDateTime created;
-  private LocalDateTime expirationDate;
+  private Date expirationDate;
   private PropertyStatus status;
   private UserOutDto owner;
 }
