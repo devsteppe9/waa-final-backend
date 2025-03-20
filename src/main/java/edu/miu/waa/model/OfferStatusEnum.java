@@ -1,18 +1,18 @@
 package edu.miu.waa.model;
 
+import lombok.Getter;
+
+@Getter
 public enum OfferStatusEnum {
-    PENDING("pending"),
-    APPROVED("approved"),
-    REJECTED("rejected");
+    OPEN("OPEN"),
+    ACCEPTED("ACCEPTED"),
+    REJECTED("REJECTED"),
+    CANCELLED("CANCELLED");
 
     private final String statusText;
 
     OfferStatusEnum(String statusText) {
         this.statusText = statusText;
-    }
-
-    public String getStatusText() {
-        return statusText;
     }
 
     public static OfferStatusEnum fromString(String text) throws IllegalArgumentException {
