@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.miu.waa.dto.response.PropertyResponseDto;
 import edu.miu.waa.model.Property;
-import edu.miu.waa.repo.FileResourceRepo;
+import edu.miu.waa.model.PropertyStatus;
 import edu.miu.waa.service.PropertyService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +71,7 @@ class PropertyControllerTest extends AbstractControllerTest {
     assertEquals(1, property.getTotalBathrooms());
     assertEquals(1, property.getTotalBedrooms());
     assertEquals(1, property.getTotalArea());
+    assertEquals(PropertyStatus.AVAILABLE, property.getStatus());
   }
 
   @Test

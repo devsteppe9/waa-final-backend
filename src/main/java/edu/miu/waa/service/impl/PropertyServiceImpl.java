@@ -5,13 +5,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import edu.miu.waa.WaaApplication;
 import edu.miu.waa.dto.request.PropertyRequestDto;
 import edu.miu.waa.model.Property;
+import edu.miu.waa.model.PropertyStatus;
+import edu.miu.waa.model.User;
 import edu.miu.waa.repo.PropertyRepo;
+import edu.miu.waa.security.service.CurrentUserService;
 import edu.miu.waa.service.PropertyService;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.ResourceAccessException;
@@ -23,6 +28,7 @@ public class PropertyServiceImpl implements PropertyService {
 
   private final PropertyRepo propertyRepo;
   private final ModelMapper modelMapper;
+  private final CurrentUserService currentUserService;
 
   @Override
   @Transactional(readOnly = true)
@@ -38,7 +44,11 @@ public class PropertyServiceImpl implements PropertyService {
 
   @Override
   public Property create(PropertyRequestDto propertyDto) {
+    User currentUser = currentUserService.getCurrentUser("owner");
     Property property = modelMapper.map(propertyDto, Property.class);
+    property.setOwner(currentUser);
+    property.setCreated(LocalDateTime.now());
+    property.setStatus(property.getStatus() != null ? property.getStatus() : PropertyStatus.AVAILABLE);
     propertyRepo.save(property);
     return property;
   }

@@ -31,7 +31,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Offer> offers;
-
+    
     @Override
     public String toString() {
         return username;
