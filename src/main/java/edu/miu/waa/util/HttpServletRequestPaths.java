@@ -1,6 +1,7 @@
 package edu.miu.waa.util;
 
 
+import edu.miu.waa.service.StaticPropertyHolder;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,6 +10,7 @@ public class HttpServletRequestPaths {
   public static final Pattern API_VERSION = Pattern.compile("(/api/v(\\d+)?/)");
   
   public static String generateFileResourceLink(String storageKey, HttpServletRequest request) {
+    
     return String.format(
         "%s/%s/%s", getApiPath(request), "file-resources", storageKey);
   }
@@ -18,10 +20,11 @@ public class HttpServletRequestPaths {
     String version = "";
 
     if (matcher.find()) {
-      version = "/v" + matcher.group(2);
+      version = "v" + matcher.group(2);
     }
-
-    return getContextPath(request) + "/api" + version;
+    String domain = StaticPropertyHolder.getBackendDomain();
+    String domainPath = domain != null && !domain.equals("null") && domain.length() > 0 ? "/" + domain : "";
+    return String.format("%s%s/api/%s", getContextPath(request), domainPath, version);
   }
 
   public static String getServletPath(HttpServletRequest request) {

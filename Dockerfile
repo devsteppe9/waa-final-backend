@@ -9,5 +9,5 @@ COPY --from=builder /app/${JAR_FILE} app.jar
 
 RUN mkdir -p /app/uploads && chmod -R 755 /app/uploads
 
-ENTRYPOINT ["java","-jar","/app.jar","--upload-dir=/app/uploads"]
+ENTRYPOINT ["java","-jar","/app.jar","--upload-dir=/app/uploads", "--backend-domain=waa-backend"]
 
