@@ -10,18 +10,22 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class CurrentUserService {
-  
+
   private final UserRepo userRepo;
-  
+//
+//  @Transactional(readOnly = true)
+//  public User getCurrentUser() {
+//    UserDetails userDetails = CurrentUserUtil.getCurrentUserDetails();
+//    return userRepo.findUserByUsername(userDetails.getUsername());
+//  }
+
+  // TODO: Remove this method when service layer is implemented
   @Transactional(readOnly = true)
-    public User getCurrentUser() {
-      UserDetails userDetails = CurrentUserUtil.getCurrentUserDetails();
-      return userRepo.findUserByUsername(userDetails.getUsername());
+  public User getCurrentUser() {
+    User user = userRepo.findUserByUsername("jack");
+    if (user == null) {
+      return userRepo.findUserByUsername("owner");
     }
-    
-    // TODO: Remove this method when service layer is implemented
-    @Transactional(readOnly = true)
-    public User getCurrentUser(String username) {
-      return userRepo.findUserByUsername(username);
-    }
+    return user;
+  }
 }

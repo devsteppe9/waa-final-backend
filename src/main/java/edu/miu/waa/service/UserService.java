@@ -13,5 +13,6 @@ public interface UserService extends UserDetailsService {
     User findByUsername(String username);
     boolean updateUserStatus(Long id, boolean status) ;
     User addUser(User user);
+    User findById(Long id);
     
 }

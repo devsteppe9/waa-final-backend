@@ -43,10 +43,7 @@ public class OfferControllerTest extends AbstractControllerTest {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private PropertyService propertyService;
-
+    
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Mock
@@ -129,14 +126,7 @@ public class OfferControllerTest extends AbstractControllerTest {
         u.setRole("BUYER");
         return userService.addUser(u);
     }
-
-    private Property createProperty(String name) {
-        Property p = new Property();
-        p.setName(name);
-        propertyService.create(p);
-        return p;
-    }
-
+    
     private OfferResponseDto createOffer(User u) {
         OfferRequestDto offerRequestDto = new OfferRequestDto();
         Property p = createProperty("Test Property");
