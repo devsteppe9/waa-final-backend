@@ -1,6 +1,5 @@
 package edu.miu.waa.dto.response;
 
-import edu.miu.waa.model.PropertyStatus;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;

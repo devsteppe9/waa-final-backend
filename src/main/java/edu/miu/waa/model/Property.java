@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
@@ -73,6 +74,6 @@ public class Property {
   @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
   private List<Offer> offers = new ArrayList<>();
   
-  
-
+  @ManyToMany(fetch = FetchType.LAZY)
+  private List<Favourite> favourites = new ArrayList<>();
 }
