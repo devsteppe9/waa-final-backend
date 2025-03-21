@@ -8,5 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-unit-test.properties")
+@ActiveProfiles("unit-test")
 @Transactional
 public class AbstractServiceTest {}
