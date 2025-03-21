@@ -32,5 +32,5 @@ public class PropertyResponseDto {
   private Date expirationDate;
   private String status;
   private UserOutDto owner;
-  private long favouriteId;
+  private Long favouriteId;
 }

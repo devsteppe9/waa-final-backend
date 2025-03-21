@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,7 @@ public class PropertyServiceImpl implements PropertyService {
   private final ModelMapper modelMapper;
   private final CurrentUserService currentUserService;
   private final FavouriteService favouriteService;
-  
+
   @Override
   @Transactional(readOnly = true)
   public List<Property> findAllProperties() {
@@ -41,25 +42,37 @@ public class PropertyServiceImpl implements PropertyService {
   }
 
   @Override
+  public void update(Property property) {
+    propertyRepo.save(property);
+  }
+
+  @Override
   @Transactional(readOnly = true)
   public List<PropertyResponseDto> findAllPropertiesWithFavs() {
-    User user = currentUserService.getCurrentUser();
-    List<Property> properties = propertyRepo.findAllPropertiesSortByCreated_Desc();
-    List<PropertyResponseDto> dtos = properties.stream()
-        .map(property -> modelMapper.map(property, PropertyResponseDto.class))
-        .collect(Collectors.toList());
-    
-    List<Favourite> favs = favouriteService.findByUserAndProperties(user, properties);
 
-    dtos.forEach(
-        property -> {
-          Optional<Favourite> hasFav =
-              favs.stream().filter(fav -> fav.getId() == property.getId()).findFirst();
-          if (hasFav.isPresent()) {
-            property.setFavouriteId(hasFav.get().getId());
+    ModelMapper modelMapper = new ModelMapper();
+    modelMapper.addMappings(
+        new PropertyMap<Property, PropertyResponseDto>() {
+          @Override
+          protected void configure() {
+            map().setFavouriteId(
+                source.getFavourites().isEmpty() ? 0 : source.getFavourites().get(0).getId());
           }
         });
-    return dtos;
+
+    User user = currentUserService.getCurrentUser();
+    List<Property> properties = propertyRepo.findAllPropertiesSortByCreated_Desc();
+    properties.forEach(
+        property -> {
+          property.setFavourites(
+              property.getFavourites().stream()
+                  .filter(fav -> fav.getUser().getId() == user.getId())
+                  .collect(Collectors.toList()));
+        });
+
+    return properties.stream()
+        .map(property -> modelMapper.map(property, PropertyResponseDto.class))
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -74,7 +87,8 @@ public class PropertyServiceImpl implements PropertyService {
     Property property = modelMapper.map(propertyDto, Property.class);
     property.setOwner(currentUser);
     property.setCreated(LocalDateTime.now());
-    property.setStatus(property.getStatus() != null ? property.getStatus() : PropertyStatus.AVAILABLE);
+    property.setStatus(
+        property.getStatus() != null ? property.getStatus() : PropertyStatus.AVAILABLE);
     propertyRepo.save(property);
     return property;
   }
@@ -86,13 +100,13 @@ public class PropertyServiceImpl implements PropertyService {
 
   @Override
   public void updateById(long id, PropertyRequestDto property) {
-    
+
     Property persistedProperty =
         propertyRepo
             .findById(id)
             .orElseThrow(
                 () -> new IllegalArgumentException("Cannot find property: %d".formatted(id)));
-    BeanUtils.copyProperties(property, persistedProperty);  
+    BeanUtils.copyProperties(property, persistedProperty);
   }
 
   @Override
@@ -105,8 +119,11 @@ public class PropertyServiceImpl implements PropertyService {
 
   @Override
   public Property patch(long id, String jsonPatch) throws JsonProcessingException {
-    Property property = propertyRepo.findById(id).orElseThrow(() ->
-        new ResourceAccessException("Cannot find property: %d".formatted(id)));
+    Property property =
+        propertyRepo
+            .findById(id)
+            .orElseThrow(
+                () -> new ResourceAccessException("Cannot find property: %d".formatted(id)));
     JsonNode jsonNode = WaaApplication.objectMapper.readTree(jsonPatch);
     WaaApplication.objectMapper.updateValue(property, jsonNode);
     propertyRepo.save(property);

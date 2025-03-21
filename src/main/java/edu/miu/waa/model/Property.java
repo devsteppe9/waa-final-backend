@@ -77,4 +77,7 @@ public class Property {
 
   @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
   private List<Offer> offers = new ArrayList<>();
+  
+  @OneToMany(mappedBy = "property", fetch = FetchType.LAZY)
+  private List<Favourite> favourites = new ArrayList<>();
 }

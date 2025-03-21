@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface PropertyService {
   List<Property> findAllProperties();
-
+  void update(Property property);
   List<PropertyResponseDto> findAllPropertiesWithFavs();
 
   Optional<Property> findPropertyById(long id);
