@@ -15,6 +15,7 @@ import edu.miu.waa.service.FavouriteService;
 import edu.miu.waa.service.PropertyService;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ import org.springframework.web.client.ResourceAccessException;
 public class PropertyServiceImpl implements PropertyService {
 
   private final PropertyRepo propertyRepo;
+  private final OfferRepo offerRepo;
   private final ModelMapper modelMapper;
   private final CurrentUserService currentUserService;
   private final FavouriteService favouriteService;
@@ -124,7 +126,18 @@ public class PropertyServiceImpl implements PropertyService {
                 () -> new ResourceAccessException("Cannot find property: %d".formatted(id)));
     JsonNode jsonNode = WaaApplication.objectMapper.readTree(jsonPatch);
     WaaApplication.objectMapper.updateValue(property, jsonNode);
+
+    // when property sold, set all offers to rejected
+    if (property.getStatus() != null && property.getStatus() == PropertyStatus.SOLD) {
+      property.setExpirationDate(LocalDateTime.now().plusMinutes(5));
+      property.getOffers().forEach(offer -> {
+        offer.setStatus(OfferStatusEnum.REJECTED);
+        offerRepo.save(offer);
+      });
+    }
+
     propertyRepo.save(property);
+
     return property;
   }
 }
