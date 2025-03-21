@@ -16,6 +16,8 @@ import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +62,11 @@ public class Property {
   private Integer totalArea;
 
   @Basic
+  @Temporal(TemporalType.TIMESTAMP)
   private LocalDateTime created;
 
   @Basic
+  @Temporal(TemporalType.TIMESTAMP)
   private LocalDateTime expirationDate;
   
   @Enumerated(EnumType.ORDINAL)

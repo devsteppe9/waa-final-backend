@@ -14,14 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CurrentUserService {
 
   private final UserRepo userRepo;
-//
-//  @Transactional(readOnly = true)
-//  public User getCurrentUser() {
-//    UserDetails userDetails = CurrentUserUtil.getCurrentUserDetails();
-//    return userRepo.findUserByUsername(userDetails.getUsername());
-//  }
-
-  // TODO: Remove this method when service layer is implemented
+  
   @Transactional(readOnly = true)
   public User getCurrentUser() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
