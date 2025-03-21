@@ -116,15 +116,17 @@ public class PropertyServiceImpl implements PropertyService {
                 () -> new ResourceAccessException("Cannot find property: %d".formatted(id)));
     JsonNode jsonNode = WaaApplication.objectMapper.readTree(jsonPatch);
     WaaApplication.objectMapper.updateValue(property, jsonNode);
-    propertyRepo.save(property);
 
     // when property sold, set all offers to rejected
     if (property.getStatus() != null && property.getStatus() == PropertyStatus.SOLD) {
+      property.setExpirationDate(LocalDateTime.now().plusMinutes(5));
       property.getOffers().forEach(offer -> {
         offer.setStatus(OfferStatusEnum.REJECTED);
         offerRepo.save(offer);
       });
     }
+
+    propertyRepo.save(property);
 
     return property;
   }
