@@ -60,4 +60,9 @@ public class FavouriteServiceImpl implements FavouriteService {
     favourite.setProperty(property);
     return favouriteRepo.save(favourite);
   }
+
+  @Override
+  public Favourite save(Favourite favourite) {
+    return favouriteRepo.save(favourite);
+  }
 }

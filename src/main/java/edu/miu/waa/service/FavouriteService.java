@@ -16,4 +16,5 @@ public interface FavouriteService {
 
   Optional<Favourite> findById(long id);
   Favourite create(User user, Property property);
+  Favourite save(Favourite favourite);
 }
