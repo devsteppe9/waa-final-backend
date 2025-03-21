@@ -25,6 +25,13 @@ public class DataInitializer {
 
     @PostConstruct
     public void init() {
+        if (userRepository.findUserByUsername("guest") == null) {
+            User user = new User();
+            user.setUsername("guest");
+            user.setPassword(passwordEncoder.encode("Guest@123"));
+            userRepository.save(user);
+        }
+
         if (userRepository.findUserByUsername("admin") == null) {
             Role adminRole = roleRepository.findRoleByRole("ADMIN")
                     .orElseGet(() -> roleRepository.save(new Role("ADMIN")));

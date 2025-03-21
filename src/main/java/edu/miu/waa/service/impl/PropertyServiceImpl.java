@@ -37,6 +37,12 @@ public class PropertyServiceImpl implements PropertyService {
   @Override
   @Transactional(readOnly = true)
   public List<Property> findAllProperties() {
+    User user = currentUserService.getCurrentUser();
+    //Check if current user is OWNER
+    if (user != null && user.getRoles().stream().anyMatch(role -> role.getRole().equals("OWNER"))) { //OWNER only
+      return propertyRepo.findAllPropertiesByUserSortByCreated_Desc(user);
+    }
+
     return propertyRepo.findAllPropertiesSortByCreated_Desc();
   }
 

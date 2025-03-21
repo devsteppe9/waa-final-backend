@@ -15,6 +15,7 @@ import edu.miu.waa.service.FileResourceService;
 import edu.miu.waa.service.LocalStorageService;
 import edu.miu.waa.service.OfferService;
 import edu.miu.waa.service.PropertyService;
+import edu.miu.waa.util.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
@@ -51,7 +52,7 @@ public class PropertyController {
   private final PropertyService propertyService;
   private final FileResourceService fileResourceService;
   private final OfferService offerService;
-  private final Long currentUserId = 1L; // TODO: get current user id
+  private final SecurityUtils securityUtils; //get current userId
   
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
@@ -145,7 +146,7 @@ public class PropertyController {
   @GetMapping("/{propertyId}/offers")
   @ResponseStatus(HttpStatus.OK)
   public List<OfferResponseDto> getOffersByPropertyId(@PathVariable long propertyId) {
-    return offerService.findAllOffersByPropertyId(currentUserId, propertyId);
+    return offerService.findAllOffersByPropertyId(securityUtils.getCurrentUserId(), propertyId);
   }
 
   @PatchMapping("/{propertyId}/offers/{offerId}")

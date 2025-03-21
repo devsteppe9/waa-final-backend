@@ -68,8 +68,10 @@ public class AbstractControllerTest {
   }
 
   protected Property createProperty(String name) {
+    User user = createUser("owner", "OWNER");
     Property p = new Property();
     p.setName(name);
+    p.setOwner(user);
     propertyService.create(p);
     return p;
   }
