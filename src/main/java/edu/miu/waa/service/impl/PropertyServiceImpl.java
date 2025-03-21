@@ -5,12 +5,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import edu.miu.waa.WaaApplication;
 import edu.miu.waa.dto.request.PropertyRequestDto;
 import edu.miu.waa.dto.response.PropertyResponseDto;
-import edu.miu.waa.model.Favourite;
 import edu.miu.waa.model.Property;
 import edu.miu.waa.model.PropertyStatus;
 import edu.miu.waa.model.User;
 import edu.miu.waa.repo.PropertyRepo;
 import edu.miu.waa.security.service.CurrentUserService;
+import edu.miu.waa.security.util.RoleUtil;
 import edu.miu.waa.service.FavouriteService;
 import edu.miu.waa.service.PropertyService;
 import java.time.LocalDateTime;
@@ -19,7 +19,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,9 +34,18 @@ public class PropertyServiceImpl implements PropertyService {
   private final CurrentUserService currentUserService;
   private final FavouriteService favouriteService;
 
+  /**
+   * Find all properties of the current user if the current user is an owner, otherwise find all
+   * @return
+   */
   @Override
   @Transactional(readOnly = true)
   public List<Property> findAllProperties() {
+    User user = currentUserService.getCurrentUser();
+    List<Property> properties = propertyRepo.findAll();
+    if (RoleUtil.isOwner(user)) {
+      return propertyRepo.findAllByUserPropertiesSortByCreated_Desc(user.getId());
+    }
     return propertyRepo.findAllPropertiesSortByCreated_Desc();
   }
 
@@ -49,9 +57,8 @@ public class PropertyServiceImpl implements PropertyService {
   @Override
   @Transactional(readOnly = true)
   public List<PropertyResponseDto> findAllPropertiesWithFavs() {
-
     User user = currentUserService.getCurrentUser();
-    List<Property> properties = propertyRepo.findAllPropertiesSortByCreated_Desc();
+    List<Property> properties = findAllProperties();
     properties.forEach(
         property -> {
           property.setFavourites(
@@ -85,6 +92,7 @@ public class PropertyServiceImpl implements PropertyService {
 
   @Override
   public Property create(Property property) {
+    property.setOwner(currentUserService.getCurrentUser());
     return propertyRepo.save(property);
   }
 
