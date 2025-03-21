@@ -15,7 +15,6 @@ import org.springframework.web.multipart.support.StandardServletMultipartResolve
 
 @EnableAsync
 @SpringBootApplication
-@EnableConfigurationProperties(StorageProperties.class)
 public class WaaApplication {
 
 	public static ObjectMapper objectMapper = new ObjectMapper();
