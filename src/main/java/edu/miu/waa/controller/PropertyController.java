@@ -1,9 +1,11 @@
 package edu.miu.waa.controller;
 
+
 import static edu.miu.waa.util.HttpServletRequestPaths.generateFileResourceLink;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import edu.miu.waa.dto.request.OfferPatchRequestDto;
 import edu.miu.waa.dto.request.PropertyRequestDto;
 import edu.miu.waa.dto.response.FileResourceDto;
 import edu.miu.waa.dto.response.OfferResponseDto;
@@ -50,32 +52,29 @@ public class PropertyController {
   private final FileResourceService fileResourceService;
   private final OfferService offerService;
   private final Long currentUserId = 1L; // TODO: get current user id
-
+  
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   public List<PropertyResponseDto> getAllProperties(@RequestParam Optional<Boolean> withFavs) {
     if (withFavs.isPresent() && withFavs.get()) {
-      return  propertyService.findAllProperties().stream()
-          .map(property -> modelMapper.map(property, PropertyResponseDto.class))
-          .collect(Collectors.toList());
+      return  propertyService.findAllPropertiesWithFavs();
     }
-    return propertyService.findAllPropertiesWithFavs();
+    return propertyService.findAllProperties().stream()
+        .map(property -> modelMapper.map(property, PropertyResponseDto.class))
+        .collect(Collectors.toList());
   }
-  
+
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public ResponseEntity<PropertyResponseDto> getPropertyById(
-      @PathVariable long id, HttpServletRequest request) {
+  public ResponseEntity<PropertyResponseDto> getPropertyById(@PathVariable long id, HttpServletRequest request) {
     Optional<Property> property = propertyService.findPropertyById(id);
     if (!property.isPresent()) {
       return ResponseEntity.notFound().build();
     }
     PropertyResponseDto p = modelMapper.map(property.get(), PropertyResponseDto.class);
-    p.getFileResources()
-        .forEach(
-            fileResource -> {
-              fileResource.setHref(generateFileResourceLink(fileResource.getStorageKey(), request));
-            });
+    p.getFileResources().forEach(fileResource -> {
+      fileResource.setHref(generateFileResourceLink(fileResource.getStorageKey(), request));
+    });
     return ResponseEntity.ok(p);
   }
 
@@ -116,41 +115,31 @@ public class PropertyController {
 
   @PostMapping(value = "/{id}/images", consumes = "multipart/form-data")
   @ResponseStatus(HttpStatus.CREATED)
-  public PropertyResponseDto uploadImage(
-      @PathVariable long id, @RequestParam MultipartFile[] files, HttpServletRequest request)
+  public PropertyResponseDto uploadImage(@PathVariable long id, @RequestParam MultipartFile[] files, HttpServletRequest request)
       throws IOException {
-    Property property =
-        propertyService
-            .findPropertyById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Property not found"));
+    Property property = propertyService.findPropertyById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Property not found"));
     fileResourceService.saveFileResource(property, files);
 
     PropertyResponseDto response = modelMapper.map(property, PropertyResponseDto.class);
 
-    response
-        .getFileResources()
-        .forEach(
-            fileResource -> {
-              fileResource.setHref(generateFileResourceLink(fileResource.getStorageKey(), request));
-            });
-
+    response.getFileResources().forEach(fileResource -> {
+      fileResource.setHref(generateFileResourceLink(fileResource.getStorageKey(), request));
+    });
+    
     return response;
   }
 
   @GetMapping("/{id}/images")
   public List<FileResourceDto> getImages(@PathVariable long id, HttpServletRequest request) {
-    Property property =
-        propertyService
-            .findPropertyById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Property not found"));
+    Property property = propertyService.findPropertyById(id)
+        .orElseThrow(() -> new IllegalArgumentException("Property not found"));
     return property.getFileResources().stream()
-        .map(
-            (element) -> {
-              FileResourceDto dto = modelMapper.map(element, FileResourceDto.class);
-              dto.setHref(generateFileResourceLink(element.getStorageKey(), request));
-              return dto;
-            })
-        .collect(Collectors.toList());
+        .map((element) -> {
+          FileResourceDto dto = modelMapper.map(element, FileResourceDto.class);
+        dto.setHref(generateFileResourceLink(element.getStorageKey(), request));
+        return dto;
+    }).collect(Collectors.toList());
   }
 
   @GetMapping("/{propertyId}/offers")
@@ -158,4 +147,11 @@ public class PropertyController {
   public List<OfferResponseDto> getOffersByPropertyId(@PathVariable long propertyId) {
     return offerService.findAllOffersByPropertyId(currentUserId, propertyId);
   }
+
+  @PatchMapping("/{propertyId}/offers/{offerId}")
+  @ResponseStatus(HttpStatus.OK)
+  public OfferResponseDto setOfferStatus(@PathVariable long propertyId,@PathVariable long offerId, @RequestBody OfferPatchRequestDto offerRequestDto) {
+    return offerService.setOfferStatus(propertyId, offerId, offerRequestDto.getStatus());
+  }
+  
 }
