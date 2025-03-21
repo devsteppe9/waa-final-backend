@@ -1,23 +1,20 @@
 package edu.miu.waa.dto.response;
 
-import java.time.LocalDate;
-
-import edu.miu.waa.dto.response.UserOutDto;
 import edu.miu.waa.model.OfferStatusEnum;
-import edu.miu.waa.model.Property;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OfferResponseDto {
+public class OfferForPropertyResponseDto {
     private long id;
     private LocalDate createdDate;
     private Double offerAmount;
     private String message;
-    private PropertyOfferResponseDto property;
     private UserOutDto user;
     private OfferStatusEnum status;
 }

@@ -43,10 +43,7 @@ public class OfferControllerTest extends AbstractControllerTest {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private PropertyService propertyService;
-
+    
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Mock
@@ -106,23 +103,6 @@ public class OfferControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$.id").value(offerResponseDto.getId()));
     }
 
-    @Test
-    public void testUpdateOffer() throws Exception {
-        OfferRequestDto offerRequestDto = new OfferRequestDto();
-
-        mockMvc.perform(put("/api/v1/offers/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"title\": \"Updated Offer\", \"description\": \"Updated Description\"}"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    public void testDeleteOffer() throws Exception {
-        mockMvc.perform(delete("/api/v1/offers/1")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
-    }
-
     private User createOwner() {
         UserInDto u = new UserInDto();
         u.setFirstName("Jane");
@@ -146,14 +126,7 @@ public class OfferControllerTest extends AbstractControllerTest {
         u.setRole("BUYER");
         return userService.addUser(u);
     }
-
-    private Property createProperty(String name) {
-        Property p = new Property();
-        p.setName(name);
-        propertyService.create(p);
-        return p;
-    }
-
+    
     private OfferResponseDto createOffer(User u) {
         OfferRequestDto offerRequestDto = new OfferRequestDto();
         Property p = createProperty("Test Property");

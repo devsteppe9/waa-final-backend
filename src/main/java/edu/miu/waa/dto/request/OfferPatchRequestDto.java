@@ -7,10 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OfferRequestDto {
-
-    private long propertyId;
-    private Double offerAmount;
-    private String message;
-
+public class OfferPatchRequestDto {
+    private String status;
 }

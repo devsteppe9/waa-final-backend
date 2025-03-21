@@ -4,19 +4,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import edu.miu.waa.WaaApplication;
 import edu.miu.waa.dto.request.PropertyRequestDto;
+import edu.miu.waa.dto.response.PropertyResponseDto;
+import edu.miu.waa.model.Favourite;
 import edu.miu.waa.model.Property;
 import edu.miu.waa.model.PropertyStatus;
 import edu.miu.waa.model.User;
 import edu.miu.waa.repo.PropertyRepo;
 import edu.miu.waa.security.service.CurrentUserService;
+import edu.miu.waa.service.FavouriteService;
 import edu.miu.waa.service.PropertyService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.ResourceAccessException;
@@ -29,11 +32,34 @@ public class PropertyServiceImpl implements PropertyService {
   private final PropertyRepo propertyRepo;
   private final ModelMapper modelMapper;
   private final CurrentUserService currentUserService;
-
+  private final FavouriteService favouriteService;
+  
   @Override
   @Transactional(readOnly = true)
   public List<Property> findAllProperties() {
-    return propertyRepo.findAll();
+    return propertyRepo.findAllPropertiesSortByCreated_Desc();
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<PropertyResponseDto> findAllPropertiesWithFavs() {
+    User user = currentUserService.getCurrentUser();
+    List<Property> properties = propertyRepo.findAllPropertiesSortByCreated_Desc();
+    List<PropertyResponseDto> dtos = properties.stream()
+        .map(property -> modelMapper.map(property, PropertyResponseDto.class))
+        .collect(Collectors.toList());
+    
+    List<Favourite> favs = favouriteService.findByUserAndProperties(user, properties);
+
+    dtos.forEach(
+        property -> {
+          Optional<Favourite> hasFav =
+              favs.stream().filter(fav -> fav.getId() == property.getId()).findFirst();
+          if (hasFav.isPresent()) {
+            property.setFavouriteId(hasFav.get().getId());
+          }
+        });
+    return dtos;
   }
 
   @Override
@@ -44,7 +70,7 @@ public class PropertyServiceImpl implements PropertyService {
 
   @Override
   public Property create(PropertyRequestDto propertyDto) {
-    User currentUser = currentUserService.getCurrentUser("owner");
+    User currentUser = currentUserService.getCurrentUser();
     Property property = modelMapper.map(propertyDto, Property.class);
     property.setOwner(currentUser);
     property.setCreated(LocalDateTime.now());
@@ -59,7 +85,7 @@ public class PropertyServiceImpl implements PropertyService {
   }
 
   @Override
-  public void updateById(long id, Property property) {
+  public void updateById(long id, PropertyRequestDto property) {
     
     Property persistedProperty =
         propertyRepo

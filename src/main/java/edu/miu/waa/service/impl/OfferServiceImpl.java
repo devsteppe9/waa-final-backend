@@ -3,15 +3,21 @@ package edu.miu.waa.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import edu.miu.waa.dto.request.OfferPatchRequestDto;
+import edu.miu.waa.model.OfferStatusEnum;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
+
 import edu.miu.waa.dto.request.OfferRequestDto;
 import edu.miu.waa.dto.response.OfferResponseDto;
 import edu.miu.waa.model.Offer;
+import edu.miu.waa.model.Property;
 import edu.miu.waa.model.User;
 import edu.miu.waa.repo.OfferRepo;
+import edu.miu.waa.repo.PropertyRepo;
 import edu.miu.waa.repo.UserRepo;
 import edu.miu.waa.service.OfferService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +28,7 @@ public class OfferServiceImpl implements OfferService {
 
     private final OfferRepo offerRepo;
     private final UserRepo userRepo;
+    private final PropertyRepo propertyRepo;
 
     @Autowired
     ModelMapper modelMapper;
@@ -30,7 +37,9 @@ public class OfferServiceImpl implements OfferService {
     public List<OfferResponseDto> findAllOffers(Long userId) {
         List<Offer> offers = offerRepo.findByUserId(userId);
 
-        return offers.stream().map(
+        return offers.stream()
+                .sorted((o1,o2) -> o2.getId().compareTo(o1.getId()))
+                .map(
                 offer -> modelMapper.map(offer, OfferResponseDto.class)).toList();
 
     }
@@ -45,20 +54,24 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public Long create(Long userId, OfferRequestDto offerRequestDto) {
         User user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        Offer offer = modelMapper.map(offerRequestDto, Offer.class);
+        Property property = propertyRepo.findById(offerRequestDto.getPropertyId())
+                .orElseThrow(() -> new RuntimeException("Property not found"));
+        Offer offer = new Offer();
+        offer.setProperty(property);
+        offer.setOfferAmount(offerRequestDto.getOfferAmount());
+        offer.setMessage(offerRequestDto.getMessage());
         offer.setUser(user);
 
         return offerRepo.save(offer).getId();
     }
 
     @Override
-    public void update(Long userId, long id, OfferRequestDto offerRequestDto) {
-        User user = userRepo.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    public void update(Long userId, long id, OfferPatchRequestDto offerRequestDto) {
         Offer offer = offerRepo.findByUserIdAndId(userId, id)
                 .orElseThrow(() -> new RuntimeException("Offer not found"));
-        modelMapper.map(offerRequestDto, offer);
-        offer.setUser(user);
+        OfferStatusEnum status = OfferStatusEnum.fromString(offerRequestDto.getStatus());
 
+        offer.setStatus(status);
         offerRepo.save(offer);
     }
 
