@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AbstractControllerTest {
   @Autowired
   protected RoleRepo roleRepo;
-  
+
   @Autowired
   protected UserService userService;
 
@@ -41,13 +41,13 @@ public class AbstractControllerTest {
   private PropertyService propertyService;
 
   protected ObjectMapper objectMapper = new ObjectMapper();
-  
+
   @BeforeEach
   protected void init() {
     objectMapper.registerModule(new JavaTimeModule());
     objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
   }
-  
+
   protected Role getRole(String role) {
     Optional<Role> persisted = roleRepo.findRoleByRole(role);
     if (persisted.isPresent()) {
@@ -57,7 +57,7 @@ public class AbstractControllerTest {
     newRole.setRole(role);
     return roleRepo.save(newRole);
   }
-  
+
   protected User createUser(String name, String role) {
     User user = new User();
     user.setUsername(name);
@@ -74,4 +74,8 @@ public class AbstractControllerTest {
     propertyService.create(p);
     return p;
   }
+
+  protected User getCurrentUser() {
+    return userService.findByUsername("guest");
   }
+}
