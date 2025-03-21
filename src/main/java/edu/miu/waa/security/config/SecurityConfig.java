@@ -34,12 +34,12 @@ public class SecurityConfig {
         .authorizeHttpRequests()
         .requestMatchers("/api/v1/auth/**","/api/v1/system/**").permitAll()  // Permit all for authentication endpoints
         .requestMatchers("/api/v1/users/**").hasAuthority("ADMIN") // Require "ADMIN" authority for users endpoints
-        .requestMatchers(HttpMethod.GET, ".api/v1/file-resources/**").permitAll() // Permit all GET request for images
-        .requestMatchers(HttpMethod.POST, ".api/v1/file-resources/**").hasAuthority("OWNER") // Require "OWNER" authority for POST request for images
-        .requestMatchers(HttpMethod.GET, ".api/v1/properties/**").permitAll() // Permit all GET request for properties
-        .requestMatchers(HttpMethod.POST, ".api/v1/properties/**").hasAuthority("OWNER") // Require "OWNER" authority for POST request for properties
-        .requestMatchers(HttpMethod.PUT, ".api/v1/properties/**").hasAuthority("OWNER") // Require authentication for PUT requests
-        .requestMatchers(".api/v1/offers/**").hasAnyAuthority(roles) // Require "OWNER" or "CUSTOMER" authority for offers endpoints Permit all GET request for images
+        .requestMatchers(HttpMethod.GET, "/api/v1/file-resources/**").permitAll() // Permit all GET request for images
+        .requestMatchers(HttpMethod.POST, "/api/v1/file-resources/**").hasAuthority("OWNER") // Require "OWNER" authority for POST request for images
+        .requestMatchers(HttpMethod.GET, "/api/v1/properties/**").permitAll() // Permit all GET request for properties
+        .requestMatchers(HttpMethod.POST, "/api/v1/properties/**").hasAuthority("OWNER") // Require "OWNER" authority for POST request for properties
+        .requestMatchers(HttpMethod.PUT, "/api/v1/properties/**").hasAuthority("OWNER") // Require authentication for PUT requests
+        .requestMatchers("/api/v1/offers/**").hasAnyAuthority(roles) // Require "OWNER" or "CUSTOMER" authority for offers endpoints Permit all GET request for images
         .anyRequest()
         .authenticated() // All other requests require authentication
         .and()
