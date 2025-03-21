@@ -275,6 +275,36 @@ class PropertyControllerTest extends AbstractControllerTest {
         objectMapper.readValue(
             result.getResponse().getContentAsString(), PropertyResponseDto[].class);
     assertEquals(1, properties.length);
+  }
+  
+  @Test
+  void testFindAllForOneUser() throws Exception {
+    User user1 = createUser("owner1", "OWNER");
+    user1.setPassword("Owner@123");
+    userService.addUser(user1);
+    User user2 = createUser("owner2", "OWNER");
+    user2.setPassword("Owner@123");
+    userService.addUser(user2);
+    
+    Property p1 = createProperty("test1");
+    p1.setOwner(user1);
+    propertyService.update(p1);
+    Property p2 = createProperty("test2");
+    p2.setOwner(user2);
+    propertyService.update(p2);
+    
+    TestingAuthenticationToken authentication =
+        new TestingAuthenticationToken("owner1", "Owner@123", "OWNER");
+    
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    MvcResult result =
+        mockMvc.perform(get("/api/v1/properties")).andExpect(status().isOk()).andReturn();
+    PropertyResponseDto[] properties =
+        objectMapper.readValue(
+            result.getResponse().getContentAsString(), PropertyResponseDto[].class);
+    assertEquals(1, properties.length);
+    
     
   }
 }
