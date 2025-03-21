@@ -211,7 +211,7 @@ class PropertyControllerTest extends AbstractControllerTest {
     PropertyResponseDto[] properties = objectMapper.readValue(result.getResponse().getContentAsString(),
         PropertyResponseDto[].class);
     assertEquals(2, properties.length);
-    assertEquals(favourite.getId(), properties[0].getFavouriteId());
+    assertEquals(favourite.getId(), properties[1].getFavourites().get(0).getId());
   }
   
 }

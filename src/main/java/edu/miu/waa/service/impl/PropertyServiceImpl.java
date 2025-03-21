@@ -50,16 +50,6 @@ public class PropertyServiceImpl implements PropertyService {
   @Transactional(readOnly = true)
   public List<PropertyResponseDto> findAllPropertiesWithFavs() {
 
-    ModelMapper modelMapper = new ModelMapper();
-    modelMapper.addMappings(
-        new PropertyMap<Property, PropertyResponseDto>() {
-          @Override
-          protected void configure() {
-            map().setFavouriteId(
-                source.getFavourites().isEmpty() ? 0 : source.getFavourites().get(0).getId());
-          }
-        });
-
     User user = currentUserService.getCurrentUser();
     List<Property> properties = propertyRepo.findAllPropertiesSortByCreated_Desc();
     properties.forEach(
