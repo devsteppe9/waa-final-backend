@@ -14,7 +14,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Disabled
 class JwtUtilTest extends AbstractServiceTest {
 
     @Autowired
