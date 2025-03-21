@@ -198,7 +198,7 @@ class PropertyControllerTest extends AbstractControllerTest {
     property2.setCreated(LocalDateTime.now().plusHours(1));
     propertyService.update(property2);
     
-    User user = createUser("jack", "CUSTOMER");
+    User user = getCurrentUser();
     
     Favourite favourite = new Favourite();
     favourite.setUser(user);
