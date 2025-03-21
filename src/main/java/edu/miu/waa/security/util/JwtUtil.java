@@ -62,7 +62,7 @@ public class JwtUtil {
     }
 
 
-    public String getSubject(String token) {
+    public String extractUsername(String token) {
         return Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)
@@ -130,6 +130,10 @@ public class JwtUtil {
         return false;
     }
 
+    public boolean validateToken(String token, UserDetails userDetails) {
+        String username = extractUsername(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
+    }
 
     public String doGenerateRefreshToken(Map<String, Object> claims, String subject) {
 

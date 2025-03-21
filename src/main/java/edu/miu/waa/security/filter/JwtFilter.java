@@ -33,13 +33,19 @@ public class JwtFilter extends OncePerRequestFilter {
 
         var token = extractTokenFromRequest(request);
 
-        if (token != null && jwtUtil.validateToken(token)) {
+        if (token != null && !token.isEmpty() && jwtUtil.getExpirationDateFromToken(token).after(new java.util.Date())) {
+            String username = jwtUtil.getClaimFromToken(token, Claims::getSubject);
 
-            Claims claims = jwtUtil.getAllClaimsFromToken(token);
-            UserDetails authUser = userService.loadUserByUsername(claims.getSubject());
-            Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    authUser, null, authUser.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails authUser = userService.loadUserByUsername(username);
+
+                if (jwtUtil.validateToken(token, authUser)) {
+                    Claims claims = jwtUtil.getAllClaimsFromToken(token);
+                    Authentication authentication = new UsernamePasswordAuthenticationToken(
+                            authUser, null, authUser.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            }
         }
 
         filterChain.doFilter(request, response);

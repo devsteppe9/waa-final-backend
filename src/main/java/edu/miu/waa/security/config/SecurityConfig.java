@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,8 +29,24 @@ public class SecurityConfig {
     // Disable security for tests
     http
             .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.disable())
-            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+            .cors(Customizer.withDefaults())
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("api/v1/auth/**","api/v1/system/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "api/v1/file-resources/**").permitAll() // Permit all GET request for images
+                    .requestMatchers(HttpMethod.GET, "api/v1/properties/**").permitAll() // Permit all GET request for properties
+                    .requestMatchers(HttpMethod.POST, "api/v1/file-resources/**").hasAuthority("OWNER") // Require "OWNER" authority for POST request for images
+                    .requestMatchers("api/v1/users/**").hasAuthority("ADMIN") // Require "ADMIN" authority for users endpoints
+                    .requestMatchers(HttpMethod.POST, "api/v1/properties/**").hasAuthority("OWNER") // Require "OWNER" authority for POST request for properties
+                    .requestMatchers(HttpMethod.PUT, "api/v1/properties/**").hasAuthority("OWNER") // Require authentication for PUT requests
+                    .requestMatchers("api/v1/offers/**").hasAnyAuthority(roles) // Require "OWNER" or "CUSTOMER" authority for offers endpoints
+                    .anyRequest().authenticated())
+    //            // Configure session management (stateless)
+            .sessionManagement(session -> session
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            // Add custom JWT filter before UsernamePasswordAuthenticationFilter
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
     return http.build();
   }
 //
