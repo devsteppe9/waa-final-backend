@@ -3,6 +3,8 @@ package edu.miu.waa.security.service;
 import edu.miu.waa.model.User;
 import edu.miu.waa.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +24,11 @@ public class CurrentUserService {
   // TODO: Remove this method when service layer is implemented
   @Transactional(readOnly = true)
   public User getCurrentUser() {
-    User user = userRepo.findUserByUsername("jack");
-    if (user == null) {
-      return userRepo.findUserByUsername("owner");
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    if (authentication != null && authentication.isAuthenticated()) {
+      return userRepo.findUserByUsername(authentication.getName());
     }
-    return user;
+    return userRepo.findUserByUsername("guest");
   }
 }
