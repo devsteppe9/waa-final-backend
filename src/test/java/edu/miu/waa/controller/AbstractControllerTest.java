@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.miu.waa.WaaApplication;
 import edu.miu.waa.config.TestSecurityConfig;
+import edu.miu.waa.model.Property;
 import edu.miu.waa.model.Role;
 import edu.miu.waa.model.User;
 import edu.miu.waa.repo.RoleRepo;
+import edu.miu.waa.service.PropertyService;
 import edu.miu.waa.service.UserService;
 import java.util.Optional;
 import org.apiguardian.api.API;
@@ -33,6 +35,9 @@ public class AbstractControllerTest {
   
   @Autowired
   protected UserService userService;
+
+  @Autowired
+  private PropertyService propertyService;
 
   protected ObjectMapper objectMapper = new ObjectMapper();
   
@@ -60,5 +65,12 @@ public class AbstractControllerTest {
     user.getRoles().add(getRole(role));
     userService.addUser(user);
     return user;
+  }
+
+  protected Property createProperty(String name) {
+    Property p = new Property();
+    p.setName(name);
+    propertyService.create(p);
+    return p;
   }
   }
