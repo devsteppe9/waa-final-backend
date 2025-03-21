@@ -1,6 +1,8 @@
 package edu.miu.waa.config;
 
+import edu.miu.waa.dto.response.PropertyResponseDto;
 import edu.miu.waa.dto.response.UserOutDto;
+import edu.miu.waa.model.Property;
 import edu.miu.waa.model.User;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -25,7 +27,6 @@ public class AppConfig {
                 using(roleConverter).map(source, destination.getRole());
             }
         });
-
         return modelMapper;
     }
 }

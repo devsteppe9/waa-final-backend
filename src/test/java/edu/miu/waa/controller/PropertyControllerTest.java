@@ -17,7 +17,10 @@ import edu.miu.waa.model.Property;
 import edu.miu.waa.model.PropertyStatus;
 import edu.miu.waa.model.Role;
 import edu.miu.waa.model.User;
+import edu.miu.waa.service.FavouriteService;
 import edu.miu.waa.service.PropertyService;
+import java.time.LocalDateTime;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +33,9 @@ class PropertyControllerTest extends AbstractControllerTest {
   
   @Autowired
   private PropertyService propertyService;
+  
+  @Autowired
+  private FavouriteService favouriteService;
   
   @Autowired
   private MockMvc mockMvc;
@@ -174,30 +180,38 @@ class PropertyControllerTest extends AbstractControllerTest {
                 p.getId())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .content("""
-                    {"name": "test2", "status":"AVAILABLE"}"""))
+                    { "status":"AVAILABLE"}"""))
         .andExpect(status().isOk());
 
 
     MvcResult result = mockMvc.perform(get("/api/v1/properties/" + p.getId())).andExpect(status().isOk()).andReturn();
     PropertyResponseDto property = objectMapper.readValue(result.getResponse().getContentAsString(),
         PropertyResponseDto.class);
-    assertEquals("test2", property.getName());
+    assertEquals("test", property.getName());
     assertEquals("AVAILABLE", property.getStatus());
   }
   
   @Test
   void testGetWithFavs() throws Exception {
-    Property property = createProperty("test1");
-    User user = createUser("jack", "CUSTOMER");
+    Property property1 = createProperty("test1");
+    Property property2 = createProperty("test2");
+    property2.setCreated(LocalDateTime.now().plusHours(1));
+    propertyService.update(property2);
+    
+    User user = getCurrentUser();
+    
     Favourite favourite = new Favourite();
     favourite.setUser(user);
-    favourite.setProperty(property);
+    favourite.setProperty(property1);
+    favouriteService.save(favourite);
+    property1.getFavourites().add(favourite);
+    propertyService.update(property1);
 
     MvcResult result = mockMvc.perform(get("/api/v1/properties?withFavs=true")).andExpect(status().isOk()).andReturn();
     PropertyResponseDto[] properties = objectMapper.readValue(result.getResponse().getContentAsString(),
         PropertyResponseDto[].class);
-    assertEquals(1, properties.length);
-    assertEquals(favourite.getId(), properties[0].getFavouriteId());
+    assertEquals(2, properties.length);
+    assertEquals(favourite.getId(), properties[1].getFavourites().get(0).getId());
   }
   
 }
