@@ -55,8 +55,13 @@ public class PropertyController {
   
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public List<PropertyResponseDto> getAllProperties() {
-    return propertyService.findAllProperties().stream().map(property -> modelMapper.map(property, PropertyResponseDto.class)).collect(Collectors.toList());
+  public List<PropertyResponseDto> getAllProperties(@RequestParam Optional<Boolean> withFavs) {
+    if (withFavs.isPresent() && withFavs.get()) {
+      return  propertyService.findAllPropertiesWithFavs();
+    }
+    return propertyService.findAllProperties().stream()
+        .map(property -> modelMapper.map(property, PropertyResponseDto.class))
+        .collect(Collectors.toList());
   }
 
   @GetMapping("/{id}")
