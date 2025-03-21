@@ -24,11 +24,12 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest(classes = WaaApplication.class, properties = "spring.profiles.active=unit-test")
+@SpringBootTest
 @Import(TestSecurityConfig.class)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(addFilters = false)
 @TestPropertySource(locations = "classpath:application-unit-test.properties")
 @Transactional
+@ActiveProfiles("unit-test")
 public class AbstractControllerTest {
   @Autowired
   protected RoleRepo roleRepo;
