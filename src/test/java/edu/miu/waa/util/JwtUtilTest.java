@@ -7,6 +7,7 @@ import edu.miu.waa.service.AbstractServiceTest;
 import edu.miu.waa.service.UserService;
 import java.util.Collections;
 import java.util.Date;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

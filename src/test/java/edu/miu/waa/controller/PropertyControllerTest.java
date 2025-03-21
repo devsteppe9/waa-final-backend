@@ -174,14 +174,14 @@ class PropertyControllerTest extends AbstractControllerTest {
                 p.getId())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .content("""
-                    {"name": "test2", "status":"AVAILABLE"}"""))
+                    { "status":"AVAILABLE"}"""))
         .andExpect(status().isOk());
 
 
     MvcResult result = mockMvc.perform(get("/api/v1/properties/" + p.getId())).andExpect(status().isOk()).andReturn();
     PropertyResponseDto property = objectMapper.readValue(result.getResponse().getContentAsString(),
         PropertyResponseDto.class);
-    assertEquals("test2", property.getName());
+    assertEquals("test", property.getName());
     assertEquals("AVAILABLE", property.getStatus());
   }
   
