@@ -19,7 +19,7 @@ public class FavControllerTest extends AbstractControllerTest{
     Property property = createProperty("test1");
     User user = createUser("jack", "CUSTOMER");
     
-    mockMvc.perform(post("/favourite")
+    mockMvc.perform(post("/api/v1/favorites")
       .contentType(MediaType.APPLICATION_JSON)
       .content("""
 {"userId": %d, "propertyId": %d}""".formatted(user.getId(), property.getId())))
