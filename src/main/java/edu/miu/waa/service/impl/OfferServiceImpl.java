@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import edu.miu.waa.dto.request.OfferPatchRequestDto;
-import edu.miu.waa.model.OfferStatusEnum;
+import edu.miu.waa.model.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,9 +13,6 @@ import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
 
 import edu.miu.waa.dto.request.OfferRequestDto;
 import edu.miu.waa.dto.response.OfferResponseDto;
-import edu.miu.waa.model.Offer;
-import edu.miu.waa.model.Property;
-import edu.miu.waa.model.User;
 import edu.miu.waa.repo.OfferRepo;
 import edu.miu.waa.repo.PropertyRepo;
 import edu.miu.waa.repo.UserRepo;
@@ -91,6 +88,42 @@ public class OfferServiceImpl implements OfferService {
 
         return offers.stream().map(
                 offer -> modelMapper.map(offer, OfferResponseDto.class)).toList();
+    }
+
+    @Override
+    public OfferResponseDto setOfferStatus(Long propertyId, Long offerId, String s) {
+        OfferStatusEnum status = OfferStatusEnum.fromString(s);
+        switch (status) {
+            case ACCEPTED:
+//                - 1. Check if there is no other accepted offers for this property
+//                - 2. Changes offer status to Accepted
+//                - 3. Property status to Pending
+                Property property = propertyRepo.findById(propertyId).orElseThrow(() -> new RuntimeException("Property not found"));
+                if (property.getStatus() != PropertyStatus.AVAILABLE) {
+                    throw new RuntimeException("Property is not available");
+                }
+                property.setStatus(PropertyStatus.PENDING);
+                propertyRepo.save(property);
+
+                Offer offer = offerRepo.findById(offerId).orElseThrow(() -> new RuntimeException("Offer not found"));
+                offer.setStatus(OfferStatusEnum.ACCEPTED);
+                offerRepo.save(offer);
+                return modelMapper.map(offer, OfferResponseDto.class);
+            case REJECTED:
+//                - 1. Changes offer status to REJECTED
+//                - 2. Set Property status to Available if needed
+                Offer offer1 = offerRepo.findById(offerId).orElseThrow(() -> new RuntimeException("Offer not found"));
+                offer1.setStatus(OfferStatusEnum.REJECTED);
+                offerRepo.save(offer1);
+
+                Property property1 = propertyRepo.findById(propertyId).orElseThrow(() -> new RuntimeException("Property not found"));
+                property1.setStatus(PropertyStatus.AVAILABLE);
+                propertyRepo.save(property1);
+                return modelMapper.map(offer1, OfferResponseDto.class);
+            default:
+                throw new RuntimeException("Invalid status");
+
+        }
     }
 
 }
