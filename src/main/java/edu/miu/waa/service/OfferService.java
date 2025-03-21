@@ -18,4 +18,6 @@ public interface OfferService {
     void delete(Long userId, long id);
 
     List<OfferResponseDto> findAllOffersByPropertyId(Long userId, Long propertyId);
+
+    OfferResponseDto setOfferStatus(Long propertyId, Long offerId, String status);
 }

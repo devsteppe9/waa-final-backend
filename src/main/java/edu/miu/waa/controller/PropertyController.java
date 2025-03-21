@@ -5,6 +5,7 @@ import static edu.miu.waa.util.HttpServletRequestPaths.generateFileResourceLink;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import edu.miu.waa.dto.request.OfferPatchRequestDto;
 import edu.miu.waa.dto.request.PropertyRequestDto;
 import edu.miu.waa.dto.response.FileResourceDto;
 import edu.miu.waa.dto.response.OfferResponseDto;
@@ -140,6 +141,12 @@ public class PropertyController {
   @ResponseStatus(HttpStatus.OK)
   public List<OfferResponseDto> getOffersByPropertyId(@PathVariable long propertyId) {
     return offerService.findAllOffersByPropertyId(currentUserId, propertyId);
+  }
+
+  @PatchMapping("/{propertyId}/offers/{offerId}")
+  @ResponseStatus(HttpStatus.OK)
+  public OfferResponseDto setOfferStatus(@PathVariable long propertyId,@PathVariable long offerId, @RequestBody OfferPatchRequestDto offerRequestDto) {
+    return offerService.setOfferStatus(propertyId, offerId, offerRequestDto.getStatus());
   }
   
 }
