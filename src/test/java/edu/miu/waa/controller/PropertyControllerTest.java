@@ -259,16 +259,21 @@ class PropertyControllerTest extends AbstractControllerTest {
   
   @Test
   void testFilterExpiredProperties() throws Exception {
+
+
+
     Property p1 = createProperty("test1");
     p1.setCreated(LocalDateTime.now().minusDays(31));
-    p1.setExpirationDate(LocalDateTime.now().plusDays(1));
+    p1.setExpirationDate(LocalDateTime.now().minusDays(10));
     propertyService.update(p1);
     
     Property p2 = createProperty("test2");
     p2.setCreated(LocalDateTime.now().minusDays(29));
-    p2.setExpirationDate(LocalDateTime.now().minusDays(10));
+    p2.setExpirationDate(LocalDateTime.now().plusDays(10));
     propertyService.update(p2);
-    
+
+    injectCurrentUser("customer", "Customer@123", "CUSTOMER");
+
     MvcResult result =
         mockMvc.perform(get("/api/v1/properties")).andExpect(status().isOk()).andReturn();
     PropertyResponseDto[] properties =
@@ -306,5 +311,12 @@ class PropertyControllerTest extends AbstractControllerTest {
     assertEquals(1, properties.length);
     
     
+  }
+
+  public void injectCurrentUser(String username, String password, String role) {
+    TestingAuthenticationToken authentication =
+        new TestingAuthenticationToken(username, password, role);
+
+    SecurityContextHolder.getContext().setAuthentication(authentication);
   }
 }
