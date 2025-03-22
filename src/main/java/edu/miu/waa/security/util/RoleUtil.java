@@ -7,4 +7,8 @@ public class RoleUtil {
   public static boolean isOwner(User user) {
     return user.getRoles().stream().filter(role -> RoleEnum.fromString(role.getRole()) == RoleEnum.OWNER).findFirst().isPresent();
   }
+  
+  public static boolean isCustomer(User user) {
+    return user.getRoles().stream().filter(role -> RoleEnum.fromString(role.getRole()) == RoleEnum.CUSTOMER).findFirst().isPresent();
+  }
 }

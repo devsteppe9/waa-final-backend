@@ -29,8 +29,8 @@ public class PropertyResponseDto {
   private int totalArea;
   private List<OfferForPropertyResponseDto> offers = new ArrayList<>();
   private List<FileResourceDto> fileResources = new ArrayList<>();
-  private Date created;
-  private Date expirationDate;
+  private String created;
+  private String expirationDate;
   private String status;
   private UserOutDto owner;
   private List<FavouriteResponseDto> favourites = new ArrayList<>();
