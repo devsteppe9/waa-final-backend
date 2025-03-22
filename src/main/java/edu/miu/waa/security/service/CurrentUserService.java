@@ -19,9 +19,10 @@ public class CurrentUserService {
   public User getCurrentUser() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    if (authentication != null && authentication.isAuthenticated()) {
+    if (authentication != null && !authentication.getPrincipal().equals("anonymousUser") && authentication.isAuthenticated()) {
       return userRepo.findUserByUsername(authentication.getName());
     }
+
     return userRepo.findUserByUsername("guest");
   }
 }
