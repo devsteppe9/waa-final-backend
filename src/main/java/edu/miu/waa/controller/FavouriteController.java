@@ -89,6 +89,12 @@ public class FavouriteController {
     if (!property.isPresent()) {
       return ResponseEntity.notFound().build();
     }
+
+    Favourite existed = favouriteService.findByUserAndPropertyId(user, property.get().getId());
+    if (existed != null) {
+      return ResponseEntity.badRequest().build();
+    }
+
     return ResponseEntity.ok(modelMapper.map(favouriteService.create(user, property.get()), FavouriteResponseDto.class));
   }
 }
