@@ -61,8 +61,17 @@ public class PropertyServiceImpl implements PropertyService {
   @Override
   @Transactional(readOnly = true)
   public List<PropertyResponseDto> findAllPropertiesWithFavs() {
-    User user = currentUserService.getCurrentUser();
+    
     List<Property> properties = findAllProperties();
+    
+    User user = currentUserService.getCurrentUser();
+    
+    if (!RoleUtil.isCustomer(user)) {
+      return properties.stream()
+          .map(property -> modelMapper.map(property, PropertyResponseDto.class))
+          .collect(Collectors.toList());
+    }
+    
     properties.forEach(
         property -> {
           property.setFavourites(

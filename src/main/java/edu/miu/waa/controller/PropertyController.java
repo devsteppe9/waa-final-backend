@@ -49,7 +49,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Slf4j
 public class PropertyController {
-
   private final ModelMapper modelMapper;
   private final PropertyService propertyService;
   private final FileResourceService fileResourceService;
@@ -58,13 +57,8 @@ public class PropertyController {
   
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
-  public List<PropertyResponseDto> getAllProperties(@RequestParam Optional<Boolean> withFavs) {
-    if (withFavs.isPresent() && withFavs.get()) {
+  public List<PropertyResponseDto> getAllProperties() {
       return  propertyService.findAllPropertiesWithFavs();
-    }
-    return propertyService.findAllProperties().stream()
-        .map(property -> modelMapper.map(property, PropertyResponseDto.class))
-        .collect(Collectors.toList());
   }
 
   @GetMapping("/{id}")
