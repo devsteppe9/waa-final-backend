@@ -1,7 +1,33 @@
 # Group 3 - waa-final-backend
 
-[![Unit Tests](https://github.com/devsteppe9/waa-final-backend/actions/workflows/unit-test.yaml/badge.svg)](https://github.com/devsteppe9/waa-final-backend/actions/workflows/unit-test.yaml) 
+[![Unit Tests](https://github.com/devsteppe9/waa-final-backend/actions/workflows/unit-test.yaml/badge.svg?branch=jack)](https://github.com/devsteppe9/waa-final-backend/actions/workflows/unit-test.yaml)
 [![Deploy to kubernetes cluster](https://github.com/devsteppe9/waa-final-backend/actions/workflows/main.yaml/badge.svg)](https://github.com/devsteppe9/waa-final-backend/actions/workflows/main.yaml)
+
+## Cloud Deployment
+
+### Server
+- **Provider:** AWS
+- **Instance Type:** EC2 t2.small
+- **Cluster:** Kubernetes cluster using k3s
+
+### Container Image Repository
+- **Service:** AWS ECR
+
+### CI/CD
+- **Service:** GitHub Actions
+- **Pipelines:** Unit Tests and Deployment
+
+### Backend
+- **Technology:** Spring Boot
+- **Deployment:** Containerized and deployed to Kubernetes cluster
+
+### Database
+- **Technology:** PostgreSQL
+- **Deployment:** Containerized and deployed to Kubernetes cluster
+
+### Frontend
+- **Technology:** Nginx
+- **Deployment:** Containerized and deployed to Kubernetes cluster
 
 ## Running the Application with Docker Compose
 
